@@ -64,9 +64,10 @@ public class Test extends Application{
 		// on ajoute le 3 pour éviter quand le modulo =0,1 et 2
 		int maxPoints = 5;
 		int maxPolygons = 6;
+		Random rn = new Random();
 		List<ConvexPolygon> ls = new ArrayList<ConvexPolygon>();
-		for (int i=3;i<10;i++) {
-			ls.add(new ConvexPolygon(5));
+		for (int i=3;i<(maxPolygons+3);i++) {
+			ls.add(new ConvexPolygon(rn.nextInt(maxPoints)+3));
 			System.out.println("List size = "+ ls.size());
 		}
 			
