@@ -19,7 +19,8 @@ public class ConvexPolygon extends Polygon {
 		static final int maxNumPoints=210;
 		static Random gen = new Random();
 		NumberFormat nf = new DecimalFormat("##.00");
-		static int max_X,max_Y;
+		static int max_X = 100;
+		static int max_Y = 149;
 		List<Point> points = new ArrayList<Point>();
 		
 		
@@ -27,6 +28,7 @@ public class ConvexPolygon extends Polygon {
 		public ConvexPolygon(int numPoints){
 			super();
 			genRandomConvexPolygone(numPoints);
+			System.out.println(points.size());
 			int r = gen.nextInt(256);
 			int g = gen.nextInt(256);
 			int b = gen.nextInt(256);
@@ -141,11 +143,6 @@ public class ConvexPolygon extends Polygon {
 			for (Point p : pointslist) {
 				addPoint(p.getX(), p.getY());
 			}
-			points=pointslist;
-			
+			points=pointslist;			
 		}
-		
-		
-		
-	
 }

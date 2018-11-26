@@ -9,25 +9,14 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class Individual implements Comparable{
+public class Individual extends ConvexPolygon implements Comparable{
 	
-	private ConvexPolygon polygon;
+
 	private double fitness;
-	private List<Point> points;
-	private final static int MAXX=100;
-	private final static int MAXY=149;
-	
 	
 	public Individual(int nbPoints) {
-		polygon= new ConvexPolygon(nbPoints);
-		points = new ArrayList<Point>();
-		double x,y;
-		for(int i=0; i<polygon.getPoints().size(); i++) {
-			x = polygon.getPoints().get(i);
-			y = polygon.getPoints().get(i);
-			points.add(new Point(x,y));
-			i++;
-		}
+		// J'ai rajouté ca sinon erreur de borne sur les tests
+		super(nbPoints);
 	}
 	
 	public List<Point> points(){
@@ -36,15 +25,15 @@ public class Individual implements Comparable{
 	
 	public double fitnessScore(Color[][] target) {
 	    Group image = new Group();
-	    image.getChildren().add(polygon);
-	    WritableImage wimg = new WritableImage(MAXX,MAXY);
+	    image.getChildren().add(this);
+	    WritableImage wimg = new WritableImage(max_X,max_Y);
 		image.snapshot(null,wimg);
 		PixelReader pr = wimg.getPixelReader();
 		
 		
-		for (int i=0;i<MAXX;i++){
-			for (int j=0;j<MAXY;j++){
-				if(this.polygon.contains(i, j)) {
+		for (int i=0;i<max_X;i++){
+			for (int j=0;j<max_Y;j++){
+				if(this.contains(i, j)) {
 					Color c = pr.getColor(i, j);
 					fitness += Math.pow(c.getBlue()-target[i][j].getBlue(),2)
 					+Math.pow(c.getRed()-target[i][j].getRed(),2)
@@ -58,8 +47,8 @@ public class Individual implements Comparable{
 
 
 		
-	public ConvexPolygon getPolygon() {
-		return polygon;
+	public Individual getIndividual() {
+		return this;
 	}
 	
 	public double getFitness() {
@@ -67,24 +56,42 @@ public class Individual implements Comparable{
 	}
 	
 	public void setColor(Color c) {
-		polygon.setFill(c) ;
+		this.setFill(c) ;
 	}
 	
 	public Color getColor() {
-		return (Color)polygon.getFill();
+		return (Color)this.getFill();
 	}
 	
 	public Color avgRandomColor(Color c1, Color c2) {
 		Random rn = new Random();
-		int coef = rn.nextInt(100);
-		int r1 = (int) c1.getRed();
-		int r2 = (int) c2.getRed();
-		int b1 = (int) c1.getBlue();
-		int b2 = (int) c2.getBlue();
-		int g1 = (int) c1.getGreen();
-		int g2 = (int) c2.getGreen();
-		Color c = Color.rgb((r1*coef+r2*(100-coef)),(g1*coef+g2*(100-coef)),(b1*coef+b2*(100-coef)));
+		// je divise par 100 sinon t'as un coef qui marche pas, et 101 car exclusif et pas inclusif
+		double coef = rn.nextInt(101);
+		coef = coef/100;
+		
+		double r1 =  c1.getRed();
+		double r2 =  c2.getRed();
+		double b1 =  c1.getBlue();
+		double b2 =  c2.getBlue();
+		double g1 =  c1.getGreen();
+		double g2 =  c2.getGreen();
+		
+		
+		//Clareté du code
+		double r = (r1*coef)+(r2*(1-coef));
+		double g = (g1*coef)+(g2*(1-coef));
+		double b = (b1*coef)+(b2*(1-coef));
+		
+		Color c = Color.color(r, g, b);
 		return c;
+	}
+	
+	public double avgRandomOpacity(double o1, double o2) {
+		Random rn = new Random();
+		double coef = rn.nextInt(101); 
+		coef = coef /100;
+		double ret = o1*coef + o2*(1-coef);
+		return ret;
 	}
 	
 	public void mutate() {
@@ -93,25 +100,34 @@ public class Individual implements Comparable{
 		int choix;
 		
 		//parcourir les points et aléatoirement changer x et/ou y ou non
-		for(Point p : points) {
+		//for(Point p : points) {
+		for(int i=0; i < points.size(); i++) {
 			choix=rn.nextInt(4);
+			Point p;
 			switch (choix) {
 			case 0 :
-				points.add(index,new Point(p.getX(), rn.nextInt(MAXY)));
+				//points.add(index,new Point(p.getX(), rn.nextInt(MAXY)));
+				p = new Point(points.get(i).getX(), rn.nextInt(max_Y));
+				points.set(i, p);
 				break;
 			case 1 :
-				points.add(index, new Point(rn.nextInt(MAXX), p.getY()));
+				//points.add(index, new Point(rn.nextInt(MAXX), p.getY()));
+				p = new Point(rn.nextInt(max_X), points.get(i).getY());
+				points.set(i, p);
 				break;
 			case 2 :
-				points.add(index, new Point(rn.nextInt(MAXX), rn.nextInt(MAXY)));
+				//points.add(index, new Point(rn.nextInt(MAXX), rn.nextInt(MAXY)));
+				p = new Point(rn.nextInt(max_X), rn.nextInt(max_Y));
+				points.set(i, p);
 				break;
 			case 3 :
 				break;
 			}
 			index++;
 		}
+		
 		//aléatoirement : prendre changer une nuance de couleur
-		Color clr = (Color) polygon.getFill();
+		Color clr = (Color) this.getFill();
 		int red = (int)clr.getRed();
 		int blue = (int)clr.getBlue();
 		int green = (int)clr.getGreen();
@@ -123,11 +139,11 @@ public class Individual implements Comparable{
 			break;
 		case 1 :
 			//changer blue
-			polygon.setFill(Color.rgb(red,green, blue+rn.nextInt(50))) ;
+			this.setFill(Color.rgb(red,green, blue+rn.nextInt(50))) ;
 			break;
 		case 2 :
 			//changer green
-			polygon.setFill(Color.rgb(red,green+rn.nextInt(50), blue)) ;
+			this.setFill(Color.rgb(red,green+rn.nextInt(50), blue)) ;
 			break;
 		case 3 :
 			break;
