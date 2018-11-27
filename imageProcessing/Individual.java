@@ -107,20 +107,45 @@ public class Individual extends ConvexPolygon implements Comparable{
 			switch (choix) {
 			case 0 :
 				//points.add(index,new Point(p.getX(), rn.nextInt(MAXY)));
+				
 				p = new Point(points.get(i).getX(), rn.nextInt(max_Y));
+				
+//				System.out.println("Cas 1");
+//				System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
+//				System.out.println(p.getX()+"	"+p.getY());
+				
 				points.set(i, p);
+				
+//				System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
 				break;
 			case 1 :
 				//points.add(index, new Point(rn.nextInt(MAXX), p.getY()));
+				
 				p = new Point(rn.nextInt(max_X), points.get(i).getY());
+			
+//				System.out.println("Cas 2");
+//				System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
+//				System.out.println(p.getX()+"	"+p.getY());
+				
 				points.set(i, p);
+				
+//				System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
 				break;
 			case 2 :
 				//points.add(index, new Point(rn.nextInt(MAXX), rn.nextInt(MAXY)));
+				
 				p = new Point(rn.nextInt(max_X), rn.nextInt(max_Y));
+				
+//				System.out.println("Cas 3");
+//				System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
+//				System.out.println(p.getX()+"	"+p.getY());
+				
 				points.set(i, p);
+				
+//				System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
 				break;
 			case 3 :
+//				System.out.println("Cas break");
 				break;
 			}
 			index++;
@@ -128,27 +153,71 @@ public class Individual extends ConvexPolygon implements Comparable{
 		
 		//aléatoirement : prendre changer une nuance de couleur
 		Color clr = (Color) this.getFill();
-		int red = (int)clr.getRed();
-		int blue = (int)clr.getBlue();
-		int green = (int)clr.getGreen();
-		choix = rn.nextInt(4);
+		double red = clr.getRed();
+		double blue = clr.getBlue();
+		double green = clr.getGreen();
+		
+		double mutation = rn.nextInt(21);
+		mutation = mutation / 100;
+		
+		choix = rn.nextInt(8);
 		switch(choix) {
 		case 0 :
 			//changer red
-			this.setColor(Color.rgb(red+rn.nextInt(50),green, blue));
+			this.setColor(Color.color(this.mutationColor(red, mutation),green, blue));
 			break;
 		case 1 :
 			//changer blue
-			this.setFill(Color.rgb(red,green, blue+rn.nextInt(50))) ;
+			this.setFill(Color.color(red,green, this.mutationColor(blue, mutation))) ;
 			break;
 		case 2 :
 			//changer green
-			this.setFill(Color.rgb(red,green+rn.nextInt(50), blue)) ;
+			this.setFill(Color.color(red,this.mutationColor(green, mutation), blue)) ;
 			break;
 		case 3 :
+			this.setFill(Color.color(this.mutationColor(red, mutation),this.mutationColor(green, mutation), blue)) ;
+			break;
+
+		case 4 :
+			this.setFill(Color.color(this.mutationColor(red, mutation), green, this.mutationColor(blue, mutation))) ;
+			break;
+
+		case 5 :
+			this.setFill(Color.color(red, this.mutationColor(green, mutation), this.mutationColor(blue, mutation))) ;
+			break;
+
+		case 6 :
+			this.setFill(Color.color(this.mutationColor(red, mutation), this.mutationColor(green, mutation), this.mutationColor(blue, mutation))) ;
+			break;
+		case 7 :
 			break;
 		}
 	}
+	
+	
+	private double mutationColor(double couleur, double var) {
+		double ret;
+		Random rn = new Random();
+
+		if(rn.nextBoolean()) {
+			if((couleur+var) > 1.0) {
+				ret = 1.0;
+			}
+			else {
+				ret = couleur+var;
+			}
+		}
+		else {
+			if((couleur-var) < 0.0) {
+				ret = 0.0;
+			}
+			else {
+				ret = couleur-var;
+			}
+		}
+		return ret;
+	}
+	
 	
 	public Individual crossover(Individual ind) {
 		Random rn = new Random();

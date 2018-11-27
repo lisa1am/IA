@@ -28,7 +28,7 @@ public class ConvexPolygon extends Polygon {
 		public ConvexPolygon(int numPoints){
 			super();
 			genRandomConvexPolygone(numPoints);
-			System.out.println(points.size());
+			//System.out.println(points.size());
 			int r = gen.nextInt(256);
 			int g = gen.nextInt(256);
 			int b = gen.nextInt(256);

@@ -70,4 +70,31 @@ public class IndividualTest extends TestCase {
 		assertTrue("Opacity compare", o != 1 && o != o2);
 		
 	}
+	
+	public void testMutation() throws Exception{
+		Individual ind = new Individual(3);
+		Individual ind2 = new Individual(3);
+		
+		
+		for(int i = 0; i < ind.points.size(); i++) {
+			Point p = new Point(ind.points.get(i).getX(), ind.points.get(i).getY());
+//			System.out.println(ind.points.get(i).getX());
+//			System.out.println(ind.points.get(i).getY());
+			ind2.points.set(i, p);
+		}
+		ind.mutate();
+		
+		assertTrue("Verification nb point egal", ind2.points.size() == ind.points.size());
+		
+		for(int i = 0; i < ind.points.size(); i++) {
+//			System.out.println("\n \n"+ind.points.get(i).getX());
+//			System.out.println(ind2.points.get(i).getX());
+//			System.out.println(ind.points.get(i).getY());
+//			System.out.println(ind2.points.get(i).getY());
+			
+			assertTrue("Mutate point", (ind.points.get(i).getX() != ind2.points.get(i).getX()) || (ind.points.get(i).getY() != ind2.points.get(i).getY()) );
+		}
+		
+		
+	}
 }
