@@ -7,7 +7,8 @@ public class IndividualTest extends TestCase {
 
 	public void testConstructeur() throws Exception{
 		int n = 3;
-		
+		ConvexPolygon.max_X = 100;
+		ConvexPolygon.max_Y = 149;
 		Individual ind = new Individual(n);
 		assertTrue(ind.points().size() == n);
 		
@@ -20,6 +21,8 @@ public class IndividualTest extends TestCase {
 	}
 	
 	public void testColor() throws Exception{
+		ConvexPolygon.max_X = 100;
+		ConvexPolygon.max_Y = 149;
 		Individual ind = new Individual(3);
 		Individual ind2 = new Individual(3);
 		
@@ -56,6 +59,8 @@ public class IndividualTest extends TestCase {
 	}
 	
 	public void testOpacity() throws Exception{
+		ConvexPolygon.max_X = 100;
+		ConvexPolygon.max_Y = 149;
 		Individual ind = new Individual(3);
 		Individual ind2 = new Individual(3);
 		
@@ -67,11 +72,13 @@ public class IndividualTest extends TestCase {
 		
 		double o = ind.avgRandomOpacity(o1, o2);
 		
-		assertTrue("Opacity compare", o != 1 && o != o2);
+		assertTrue("Opacity compare", o != o1 && o != o2);
 		
 	}
 	
-	public void testMutation() throws Exception{
+	public void testMutationPoint() throws Exception{
+		ConvexPolygon.max_X = 100;
+		ConvexPolygon.max_Y = 149;
 		Individual ind = new Individual(3);
 		Individual ind2 = new Individual(3);
 		
@@ -86,15 +93,41 @@ public class IndividualTest extends TestCase {
 		
 		assertTrue("Verification nb point egal", ind2.points.size() == ind.points.size());
 		
-		for(int i = 0; i < ind.points.size(); i++) {
+//		for(int i = 0; i < ind.points.size(); i++) {
 //			System.out.println("\n \n"+ind.points.get(i).getX());
 //			System.out.println(ind2.points.get(i).getX());
 //			System.out.println(ind.points.get(i).getY());
 //			System.out.println(ind2.points.get(i).getY());
-			
-			assertTrue("Mutate point", (ind.points.get(i).getX() != ind2.points.get(i).getX()) || (ind.points.get(i).getY() != ind2.points.get(i).getY()) );
-		}
+//			
+//			assertTrue("Mutate point", (ind.points.get(i).getX() != ind2.points.get(i).getX()) || (ind.points.get(i).getY() != ind2.points.get(i).getY()) );
+//		}
+		boolean test = (ind.points.get(0).getX() != ind2.points.get(0).getX()) || (ind.points.get(0).getY() != ind2.points.get(0).getY()) || 
+						(ind.points.get(1).getX() != ind2.points.get(1).getX()) || (ind.points.get(1).getY() != ind2.points.get(1).getY()) ||
+						(ind.points.get(2).getX() != ind2.points.get(2).getX()) || (ind.points.get(2).getY() != ind2.points.get(2).getY());
 		
-		
+		assertTrue("Mutate point", test );	
 	}
+	
+	public void testMutationCouleur() throws Exception{
+		ConvexPolygon.max_X = 100;
+		ConvexPolygon.max_Y = 149;
+		Individual ind = new Individual(3);
+		double red = ind.getColor().getRed();
+		double green = ind.getColor().getGreen();
+		double blue = ind.getColor().getBlue();
+		
+//		System.out.println("Couleur base : \n RED : "+red+"\n GREEN : "+green+"\n BLUE : "+blue);
+		
+		ind.mutate();
+		
+		double red2 = ind.getColor().getRed();
+		double green2 = ind.getColor().getGreen();
+		double blue2 = ind.getColor().getBlue();
+		
+//		System.out.println("Couleur mutation : \n RED : "+red2+"\n GREEN : "+green2+"\n BLUE : "+blue2);
+		
+		boolean test = red != red2 || green != green2 || blue != blue2;
+	}
+	
+	
 }

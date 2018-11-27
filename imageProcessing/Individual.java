@@ -164,32 +164,40 @@ public class Individual extends ConvexPolygon implements Comparable{
 		switch(choix) {
 		case 0 :
 			//changer red
+//			System.out.println("red");
 			this.setColor(Color.color(this.mutationColor(red, mutation),green, blue));
 			break;
 		case 1 :
 			//changer blue
+//			System.out.println("blue");
 			this.setFill(Color.color(red,green, this.mutationColor(blue, mutation))) ;
 			break;
 		case 2 :
 			//changer green
+//			System.out.println("green");
 			this.setFill(Color.color(red,this.mutationColor(green, mutation), blue)) ;
 			break;
 		case 3 :
+//			System.out.println("red, green");
 			this.setFill(Color.color(this.mutationColor(red, mutation),this.mutationColor(green, mutation), blue)) ;
 			break;
 
 		case 4 :
+//			System.out.println("red, blue");
 			this.setFill(Color.color(this.mutationColor(red, mutation), green, this.mutationColor(blue, mutation))) ;
 			break;
 
 		case 5 :
+//			System.out.println("green, blue");
 			this.setFill(Color.color(red, this.mutationColor(green, mutation), this.mutationColor(blue, mutation))) ;
 			break;
 
 		case 6 :
+//			System.out.println("3 couleurs");
 			this.setFill(Color.color(this.mutationColor(red, mutation), this.mutationColor(green, mutation), this.mutationColor(blue, mutation))) ;
 			break;
 		case 7 :
+//			System.out.println("BREAK");
 			break;
 		}
 	}

@@ -19,8 +19,8 @@ public class ConvexPolygon extends Polygon {
 		static final int maxNumPoints=210;
 		static Random gen = new Random();
 		NumberFormat nf = new DecimalFormat("##.00");
-		static int max_X = 100;
-		static int max_Y = 149;
+		static int max_X;
+		static int max_Y;
 		List<Point> points = new ArrayList<Point>();
 		
 		
