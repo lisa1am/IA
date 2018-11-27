@@ -3,28 +3,28 @@ package imageProcessing;
 import javafx.scene.paint.Color;
 import junit.framework.*;
 
-public class IndividualTest extends TestCase {
+public class ConvexPolygonTest extends TestCase {
 
 	public void testConstructeur() throws Exception{
 		int n = 3;
 		ConvexPolygon.max_X = 100;
 		ConvexPolygon.max_Y = 149;
-		Individual ind = new Individual(n);
-		assertTrue(ind.points().size() == n);
+		ConvexPolygon ind = new ConvexPolygon(n);
+		assertTrue(ind.points.size() == n);
 		
-		for(int i = 0; i < ind.points().size(); i++) {
-			assertTrue("Borne max X",ind.points().get(i).getX() <= 100);
-			assertTrue("Borne max Y",ind.points().get(i).getX() <= 149);
+		for(int i = 0; i < ind.points.size(); i++) {
+			assertTrue("Borne max X",ind.points.get(i).getX() <= 100);
+			assertTrue("Borne max Y",ind.points.get(i).getX() <= 149);
 		}
 		
-		assertTrue("2 points différents", (ind.points().get(0).getX() != ind.points().get(1).getX()) || ind.points().get(0).getY() != ind.points().get(1).getY());
+		assertTrue("2 points différents", (ind.points.get(0).getX() != ind.points.get(1).getX()) || ind.points.get(0).getY() != ind.points.get(1).getY());
 	}
 	
 	public void testColor() throws Exception{
 		ConvexPolygon.max_X = 100;
 		ConvexPolygon.max_Y = 149;
-		Individual ind = new Individual(3);
-		Individual ind2 = new Individual(3);
+		ConvexPolygon ind = new ConvexPolygon(3);
+		ConvexPolygon ind2 = new ConvexPolygon(3);
 		
 		Color c1 = ind.getColor();
 		Color c2 = ind2.getColor();
@@ -61,8 +61,8 @@ public class IndividualTest extends TestCase {
 	public void testOpacity() throws Exception{
 		ConvexPolygon.max_X = 100;
 		ConvexPolygon.max_Y = 149;
-		Individual ind = new Individual(3);
-		Individual ind2 = new Individual(3);
+		ConvexPolygon ind = new ConvexPolygon(3);
+		ConvexPolygon ind2 = new ConvexPolygon(3);
 		
 		double o1 = ind.getOpacity();
 		double o2 = ind2.getOpacity();
@@ -79,8 +79,8 @@ public class IndividualTest extends TestCase {
 	public void testMutationPoint() throws Exception{
 		ConvexPolygon.max_X = 100;
 		ConvexPolygon.max_Y = 149;
-		Individual ind = new Individual(3);
-		Individual ind2 = new Individual(3);
+		ConvexPolygon ind = new ConvexPolygon(3);
+		ConvexPolygon ind2 = new ConvexPolygon(3);
 		
 		
 		for(int i = 0; i < ind.points.size(); i++) {
@@ -111,7 +111,7 @@ public class IndividualTest extends TestCase {
 	public void testMutationCouleur() throws Exception{
 		ConvexPolygon.max_X = 100;
 		ConvexPolygon.max_Y = 149;
-		Individual ind = new Individual(3);
+		ConvexPolygon ind = new ConvexPolygon(3);
 		double red = ind.getColor().getRed();
 		double green = ind.getColor().getGreen();
 		double blue = ind.getColor().getBlue();
