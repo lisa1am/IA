@@ -74,14 +74,22 @@ public class Population {
 	//mettre à jour le fitnessScore
 	public void selection(int selectionSize) {
 		sortByFitness();
-		
 		//elitism
 		for(int i=0; i<selectionSize; i++) {
 			listBest.add(individuals.get(i));
 		}
 	}
 	
-	
-	
+	public void crossoverDadMum() {
+		this.selection(10);
+		
+		individuals.clear();
+		
+		for(int i = 0; i < listBest.size(); i++) {
+			individuals.add(listBest.get(i).crossover(listBest.get(i+1)));
+			individuals.add(listBest.get(i+1).crossover(listBest.get(i)));
+			i++;
+		}
+	}
 	
 }

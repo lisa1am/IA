@@ -54,13 +54,11 @@ public class Test extends Application{
 		System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
 		
 		// génération de 10 triangles
-		List<ConvexPolygon> ls = new ArrayList<ConvexPolygon>();
-		for (int i=0;i<200;i++)
-			ls.add(new ConvexPolygon(3));
+		Individual ind = new Individual(3);
 		
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
-		for (ConvexPolygon p : ls)
+		for (ConvexPolygon p : ind.getIndividu())
 			image.getChildren().add(p);
 		
 		// Calcul de la couleur de chaque pixel.Pour cela, on passe par une instance de 

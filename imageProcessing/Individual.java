@@ -1,6 +1,7 @@
 package imageProcessing;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,10 +10,14 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 public class Individual implements Comparable{
 	
@@ -27,7 +32,14 @@ public class Individual implements Comparable{
 		}
 		this.fitnessScore();
 	}
+	
+	public Individual() {
+		this.individu = new ArrayList<ConvexPolygon>();
+	}
 
+	public ArrayList<ConvexPolygon> getIndividu(){
+		return this.individu;
+	}
 	
 	public void fitnessScore() {
 		String targetImage = "monaLisa-100.jpg";
@@ -81,7 +93,8 @@ public class Individual implements Comparable{
 						+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
 			}
 		}
-		System.out.println("Fitness Score d'un individu"+Math.sqrt(res));
+		System.out.println("Fitness Score d'un individu : "+Math.sqrt(res));
+		
 		this.fitness = res;
 	}
 
@@ -95,6 +108,19 @@ public class Individual implements Comparable{
 		return this;
 	}
 
+	public Individual crossover(Individual ind) {
+		Individual ret = new Individual();
+		for(int i = 0; i < this.individu.size(); i++) {
+			if(i%2 == 0) {
+				ret.individu.add(this.individu.get(i));
+			}
+			else {
+				ret.individu.add(ind.individu.get(i));
+			}
+		}
+		ret.fitnessScore();
+		return ret;
+	}
 	
 
 	@Override
