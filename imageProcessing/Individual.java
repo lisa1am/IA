@@ -73,7 +73,7 @@ public class Individual implements Comparable{
 
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
-		for (ConvexPolygon p : individu)
+		for (ConvexPolygon p : this.individu)
 			image.getChildren().add(p);
 
 		// Calcul de la couleur de chaque pixel.Pour cela, on passe par une instance de 
@@ -93,13 +93,12 @@ public class Individual implements Comparable{
 						+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
 			}
 		}
-		System.out.println("Fitness Score d'un individu : "+Math.sqrt(res));
+		//System.out.println("Fitness Score d'un individual: "+Math.sqrt(res));
 		
-		this.fitness = res;
+		this.fitness = Math.sqrt(res);
 	}
 
 	public double getFitness() {
-		this.fitnessScore();
 		return this.fitness;
 	}
 
@@ -126,7 +125,7 @@ public class Individual implements Comparable{
 	@Override
 	public int compareTo(Object o) {
 		Individual ind = (Individual) o;
-		if(this.getFitness()<ind.getFitness()) {
+		if(this.getFitness() < ind.getFitness()) {
 			return -1;
 		}else {
 			if(this.getFitness()>ind.getFitness()) {

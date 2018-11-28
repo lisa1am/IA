@@ -54,7 +54,9 @@ public class Test extends Application{
 		System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
 		
 		// génération de 10 triangles
-		Individual ind = new Individual(3);
+		Population pop = new Population(400);
+		
+		Individual ind = pop.testA();
 		
 		// formation de l'image par superposition des polygones
 		Group image = new Group();

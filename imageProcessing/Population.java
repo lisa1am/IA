@@ -32,9 +32,11 @@ public class Population {
 	//initialiser la population avec le d'individus souhaité
 		public Population(int popSize) {
 			individuals = new ArrayList<Individual>();
-			for (int i=0;i<20;i++) {
+			for (int i=0;i< popSize;i++) {
 				individuals.add(new Individual(3));
 			}	
+			
+			listBest = new ArrayList<Individual>();
 		}
 
 	
@@ -78,18 +80,34 @@ public class Population {
 		for(int i=0; i<selectionSize; i++) {
 			listBest.add(individuals.get(i));
 		}
+		
+		System.out.println("BEST :"+listBest.get(0).getFitness());
 	}
 	
 	public void crossoverDadMum() {
-		this.selection(10);
+		listBest.clear();
+		this.selection(200);
 		
-		individuals.clear();
+//		for(int j = 0; j < listBest.size(); j++) {
+//			//System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+//		}
 		
-		for(int i = 0; i < listBest.size(); i++) {
+		//individuals.clear();
+		
+		for(int i = 0; i < listBest.size()-1; i++) {
 			individuals.add(listBest.get(i).crossover(listBest.get(i+1)));
 			individuals.add(listBest.get(i+1).crossover(listBest.get(i)));
 			i++;
 		}
+	}
+	
+	
+	
+	public Individual testA() {
+		for(int i = 0; i < 200; i++) {
+			this.crossoverDadMum();
+		}
+		return this.getBest();
 	}
 	
 }
