@@ -54,7 +54,7 @@ public class Test extends Application{
 		System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
 		
 		// génération de 10 triangles
-		Population pop = new Population(100);
+		Population pop = new Population(200);
 		
 		Individual ind = pop.testA();
 		

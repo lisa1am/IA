@@ -124,10 +124,67 @@ public class Individual implements Comparable{
 				ret.individu.add(ind.individu.get(i));
 			}
 		}
+		//ret.fitnessScore();
+		//System.out.println("AVANT MUTATION : \t"+ind.getFitness()+" et "+this.getFitness()+"\t fitness :"+ret.getFitness());
+		ret.mutation(5);
 		ret.fitnessScore();
+		//System.out.println("Nouvelle enfant entre : \t"+ind.getFitness()+" et "+this.getFitness()+"\t fitness :"+ret.getFitness()+"\n");
 		return ret;
 	}
 	
+	
+	
+	
+	public void mutation(int pourcentage) {
+		
+		
+		Random rn = new Random();
+		int pourc = rn.nextInt(101);
+		if(pourc < pourcentage) {
+			//System.out.println("GOOOOOOO ------------");
+		for(int i = 0; i < this.individu.size(); i++) {
+			this.individu.get(i).mutate(12);
+		}
+		this.fitnessScore();
+		}
+	}
+	
+	
+
+	@Override
+	public int compareTo(Object o) {
+		Individual ind = (Individual) o;
+		if(this.getFitness() < ind.getFitness()) {
+			return -1;
+		}else {
+			if(this.getFitness()>ind.getFitness()) {
+				return 1;
+			}else {
+				return 0;
+			}
+		}
+	}
+	
+/*
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ *  NE SERT A RIEN DESSOUS CA, ENFIN JE M EN SERS PAS
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 	
+ */
 	public Individual crossoverTwoEach(Individual ind) {
 		Individual ret = new Individual();
 		int index = 0;
@@ -183,7 +240,7 @@ public class Individual implements Comparable{
 		ret.fitnessScore();
 		return ret;
 	}
-	
+
 	public Individual crossoverRandom(Individual ind) {
 		Individual ret = new Individual();
 		Random rn = new Random();
@@ -222,20 +279,4 @@ public class Individual implements Comparable{
 		ret.fitnessScore();
 		return ret;
 	}
-
-	@Override
-	public int compareTo(Object o) {
-		Individual ind = (Individual) o;
-		if(this.getFitness() < ind.getFitness()) {
-			return -1;
-		}else {
-			if(this.getFitness()>ind.getFitness()) {
-				return 1;
-			}else {
-				return 0;
-			}
-		}
-	}
-
-	
 }
