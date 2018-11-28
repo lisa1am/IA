@@ -75,7 +75,6 @@ public class Population {
 	//choisir le meilleur par rapport au fitnessScore
 	//mettre à jour le fitnessScore
 	public void selection(int selectionSize) {
-		sortByFitness();
 		//elitism
 		for(int i=0; i<selectionSize; i++) {
 			listBest.add(individuals.get(i));
@@ -84,29 +83,96 @@ public class Population {
 		System.out.println("BEST :"+listBest.get(0).getFitness());
 	}
 	
-	public void crossoverDadMum() {
-		listBest.clear();
-		this.selection(200);
+	public void crossoverOneEach() {
 		
-//		for(int j = 0; j < listBest.size(); j++) {
-//			//System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
-//		}
+		for(int j = 0; j < listBest.size(); j++) {
+			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+		}
 		
+		System.out.println("\n \n");
+		
+		for(int i = 0; i < listBest.size()-1; i++) {
+			individuals.add(listBest.get(i).crossoverOneEach(listBest.get(i+1)));
+			individuals.add(listBest.get(i+1).crossoverOneEach(listBest.get(i)));
+			i++;
+		}
+	}
+	
+	public void crossoverTwoEach() {
+		
+		for(int j = 0; j < listBest.size(); j++) {
+			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+		}
+		
+		System.out.println("\n \n");
 		//individuals.clear();
 		
 		for(int i = 0; i < listBest.size()-1; i++) {
-			individuals.add(listBest.get(i).crossover(listBest.get(i+1)));
-			individuals.add(listBest.get(i+1).crossover(listBest.get(i)));
+			individuals.add(listBest.get(i).crossoverTwoEach(listBest.get(i+1)));
+			individuals.add(listBest.get(i+1).crossoverTwoEach(listBest.get(i)));
+			i++;
+		}
+	}
+	
+public void crossoverThreeEach() {
+		
+		for(int j = 0; j < listBest.size(); j++) {
+			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+		}
+		
+		System.out.println("\n \n");
+		//individuals.clear();
+		
+		for(int i = 0; i < listBest.size()-1; i++) {
+			individuals.add(listBest.get(i).crossoverThreeEach(listBest.get(i+1)));
+			individuals.add(listBest.get(i+1).crossoverThreeEach(listBest.get(i)));
 			i++;
 		}
 	}
 	
 	
+	public void crossoverMiddle() {
+		
+		for(int j = 0; j < listBest.size(); j++) {
+			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+		}
+		
+		System.out.println("\n \n");
+		
+		//individuals.clear();
+		
+		for(int i = 0; i < listBest.size()-1; i++) {
+			individuals.add(listBest.get(i).crossoverMiddle(listBest.get(i+1)));
+			individuals.add(listBest.get(i+1).crossoverMiddle(listBest.get(i)));
+			i++;
+		}
+	}
+	
+	public void crossoverRandom() {
+		for(int j = 0; j < listBest.size(); j++) {
+			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+		}
+		
+		System.out.println("\n \n");
+		
+		//individuals.clear();
+		
+		for(int i = 0; i < listBest.size()-1; i++) {
+			individuals.add(listBest.get(i).crossoverRandom(listBest.get(i+1)));
+			individuals.add(listBest.get(i+1).crossoverRandom(listBest.get(i)));
+			i++;
+		}
+	}
+	
 	
 	public Individual testA() {
-		for(int i = 0; i < 200; i++) {
-			this.crossoverDadMum();
-		}
+		sortByFitness();
+		listBest.clear();
+		this.selection(20);
+		individuals.clear();
+		this.crossoverOneEach();
+		this.crossoverTwoEach();
+		this.crossoverThreeEach();
 		return this.getBest();
 	}
 	

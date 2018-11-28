@@ -23,6 +23,10 @@ public class Individual implements Comparable{
 	
 	private double fitness;
 	private ArrayList<ConvexPolygon> individu;
+	String targetImage;
+	Color[][] target;
+	int maxX;
+	int maxY;
 	
 	public Individual(int nbPoints) {
 		this.individu = new ArrayList<ConvexPolygon>();
@@ -30,22 +34,24 @@ public class Individual implements Comparable{
 			ConvexPolygon cp = new ConvexPolygon(3);
 			individu.add(cp);
 		}
+		this.MiseaJour();
 		this.fitnessScore();
 	}
 	
 	public Individual() {
+		this.MiseaJour();
 		this.individu = new ArrayList<ConvexPolygon>();
 	}
 
 	public ArrayList<ConvexPolygon> getIndividu(){
+		
 		return this.individu;
 	}
 	
-	public void fitnessScore() {
-		String targetImage = "monaLisa-100.jpg";
-		Color[][] target=null;
-		int maxX=0;
-    	int maxY=0;
+	public void MiseaJour() {
+		targetImage = "monaLisa-100.jpg";
+		maxX = 0;
+		maxY = 0;
 		try{
 			BufferedImage bi = ImageIO.read(new File(targetImage));
 			maxX = bi.getWidth();
@@ -68,8 +74,9 @@ public class Individual implements Comparable{
         	System.err.println(e);
         	System.exit(9);
         }
-		System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
-
+}
+		//System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
+		public void fitnessScore() {
 
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
@@ -107,7 +114,7 @@ public class Individual implements Comparable{
 		return this;
 	}
 
-	public Individual crossover(Individual ind) {
+	public Individual crossoverOneEach(Individual ind) {
 		Individual ret = new Individual();
 		for(int i = 0; i < this.individu.size(); i++) {
 			if(i%2 == 0) {
@@ -121,6 +128,100 @@ public class Individual implements Comparable{
 		return ret;
 	}
 	
+	public Individual crossoverTwoEach(Individual ind) {
+		Individual ret = new Individual();
+		int index = 0;
+		for(int i = 0; i < this.individu.size(); i++) {
+			if(index < 2) {
+				ret.individu.add(this.individu.get(i));
+				index++;
+			}
+			else {
+				ret.individu.add(ind.individu.get(i));
+				index++;
+			}
+			
+			if(index == 4) {
+				index = 0;
+			}
+		}
+		ret.fitnessScore();
+		return ret;
+	}
+	
+	public Individual crossoverThreeEach(Individual ind) {
+		Individual ret = new Individual();
+		int index = 0;
+		for(int i = 0; i < this.individu.size(); i++) {
+			if(index < 3) {
+				ret.individu.add(this.individu.get(i));
+				index++;
+			}
+			else {
+				ret.individu.add(ind.individu.get(i));
+				index++;
+			}
+			
+			if(index == 6) {
+				index = 0;
+			}
+		}
+		ret.fitnessScore();
+		return ret;
+	}
+	
+	public Individual crossoverMiddle(Individual ind) {
+		Individual ret = new Individual();
+		for(int i = 0; i < this.individu.size(); i++) {
+			if(i <= 24) {
+				ret.individu.add(this.individu.get(i));
+			}
+			else {
+				ret.individu.add(ind.individu.get(i));
+			}
+		}
+		ret.fitnessScore();
+		return ret;
+	}
+	
+	public Individual crossoverRandom(Individual ind) {
+		Individual ret = new Individual();
+		Random rn = new Random();
+		int random;
+		ArrayList<Integer> savethis = new ArrayList<Integer>();
+		ArrayList<Integer> saveind = new ArrayList<Integer>();
+		
+		
+		for(int i =0; i < 25; i++) {
+			random = rn.nextInt(50);
+			while(savethis.contains(random)) {
+				random = rn.nextInt(50);
+			}
+			savethis.add(random);
+		}
+		
+		for(int i =0; i < 25; i++) {
+			random = rn.nextInt(50);
+			while(saveind.contains(random)) {
+				random = rn.nextInt(50);
+			}
+			saveind.add(random);
+		}
+		
+		int insert;
+		
+		for(int i = 0; i < this.individu.size(); i++) {
+			insert = i/2;
+				if(i%2==0) {
+					ret.individu.add(this.individu.get(savethis.get(insert)));
+				}
+				else {
+					ret.individu.add(ind.individu.get(saveind.get(insert)));
+				}
+		}
+		ret.fitnessScore();
+		return ret;
+	}
 
 	@Override
 	public int compareTo(Object o) {

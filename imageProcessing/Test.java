@@ -54,12 +54,21 @@ public class Test extends Application{
 		System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
 		
 		// génération de 10 triangles
-		Population pop = new Population(400);
+		Population pop = new Population(100);
 		
 		Individual ind = pop.testA();
 		
+		while(ind.getFitness() > 70) {
+			ind = pop.testA();
+		}
+		
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
+		
+		// 
+		// créer un polygone noir qui prend la taille de l'image et qui se fixe en premier
+		// 
+		//
 		for (ConvexPolygon p : ind.getIndividu())
 			image.getChildren().add(p);
 		
