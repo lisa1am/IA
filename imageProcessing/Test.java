@@ -59,7 +59,7 @@ public class Test extends Application{
 		
 		Individual ind = pop.testA();
 		
-		while(ind.getFitness() > 20) {
+		while(ind.getFitness() > 25) {
 			ind = pop.testA();
 		}
 		

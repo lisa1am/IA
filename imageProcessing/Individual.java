@@ -151,6 +151,7 @@ public class Individual implements Comparable{
 		int pourc = rn.nextInt(101);
 		
 		if(pourc < probability) {
+		System.out.println("MUTATION DU FITNESS : "+this.getFitness());
 		System.out.println("AVANT : "+this.getFitness());			
 		for(int i = 0; i < this.individu.size(); i++) {
 			this.individu.get(i).mutate(rate);
@@ -284,6 +285,9 @@ public class Individual implements Comparable{
 			}
 		}
 		ret.fitnessScore();
+//		if(ret.getFitness() < ind.getFitness() && ret.getFitness() < this.getFitness()) {
+//		System.out.println("Enfant entre : "+this.getFitness()+" et "+ind.getFitness()+" = = = "+ret.getFitness());
+//		}
 		return ret;
 	}
 }

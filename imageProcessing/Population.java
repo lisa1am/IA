@@ -40,7 +40,7 @@ public class Population {
 			}	
 			
 			listBest = new ArrayList<Individual>();
-			this.select = 10;
+			this.select = 20;
 			this.genNumber = 1;
 		}
 	
@@ -101,7 +101,7 @@ public class Population {
 		
 	}
 	
-	public void crossoverOneFOREach() {
+	public void crossoverOneFOREach(int proba, int rate) {
 		for(int j = 0; j < listBest.size(); j++) {
 			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
 		}
@@ -121,7 +121,7 @@ public class Population {
 		}
 		
 
-		this.mutation(5, 10);
+		this.mutation(proba, rate);
 		
 		
 		
@@ -131,12 +131,18 @@ public class Population {
 		for(int j = 0; j < listBest.size(); j++) {
 			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
 		}
-		
+		for(int j=0; j < listBest.size(); j++) {	
+			individuals.add(listBest.get(j));
+		}
 		System.out.println("\n \n");
 		
-		for(int t = 0; t < 3; t++) {
+		for(int t = 0; t < 5; t++) {
 		for(int i = 0; i < listBest.size(); i++) {
 			Collections.shuffle(listBest.get(i).getIndividu());
+			//listBest.get(i).fitnessScore();
+			//System.out.println("SHUFFLE : "+(i+1)+" : "+listBest.get(i).getFitness());;
+
+			
 		}
 		
 		for(int i = 0; i < listBest.size(); i++) {
@@ -148,9 +154,7 @@ public class Population {
 		}
 		}
 		
-		for(int j=0; j < listBest.size(); j++) {	
-			individuals.add(listBest.get(j));
-		}
+		
 		
 
 		this.mutation(probability, rate);	
@@ -174,21 +178,12 @@ public class Population {
 		listBest.clear();
 		this.selection(this.select);
 		
-//		for(int i = 0; i < listBest.size(); i++) {
-//			System.out.println("AFFICHAGE : "+listBest.get(i).getFitness());
-//		}
-		
-//		if(this.select > 20) {
-//			this.select--;
-//		}
+
 		individuals.clear();
 		sortByFitnessBest();
-		//this.crossoverOneFOREach();
 		this.crossoverOneFOREachRandom(5, 10);
 		
-		//this.crossoverOneEach();
-		//this.crossoverTwoEach();
-		//this.crossoverThreeEach();
+
 		this.genNumber++;
 		return this.getBest();
 	}

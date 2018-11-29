@@ -157,19 +157,24 @@ public class ConvexPolygon extends Polygon {
 		Random rn = new Random();
 		int randomRate = rn.nextInt(101); 
 		int index=0;
-		int choix;
-		
+		int choix = rn.nextInt(3);
 		if(randomRate < rate) {
-			
-			this.mutationPoint(10);
+			switch(choix) {
+			case 0 : 
+				this.mutationPoint(6);
+				break;
+			case 1 :
+				this.mutateColor(5);
+				break;
+			case 2:
+				this.mutateOpacity(5);
+				break;
+			}
 
-			this.mutateColor(10);
-			
-			this.mutateOpacity(6);
 		}
 
 	}
-	
+
 	private void mutateColor(int max) {
 		//aléatoirement : prendre changer une nuance de couleur
 		Color clr = (Color) this.getFill();
@@ -186,26 +191,26 @@ public class ConvexPolygon extends Polygon {
 			//changer red
 			double red_new = this.mutationColor(red, max);
 			this.setFill(Color.color(red_new,green, blue));
-			System.out.println("0 ---- COLOR red de "+red+" à "+red_new);
+//			System.out.println("0 ---- COLOR red de "+red+" à "+red_new);
 
-			
+
 			break;
 		case 1 :
 			//changer blue
 			double blue_new = this.mutationColor(blue, max);
 			this.setFill(Color.color(red,green, blue_new)) ;
-			System.out.println("0 ---- COLOR blue de "+blue+" à "+blue_new);
+//			System.out.println("0 ---- COLOR blue de "+blue+" à "+blue_new);
 			break;
 		case 2 :
 			//changer green
 			double green_new = this.mutationColor(green, max);
 			this.setFill(Color.color(red,green_new, blue));
-			System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
+//			System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
 			break;
 		}
 	}
-	
-	
+
+
 	private void mutationPoint(int max) {
 		int choix;
 		Random rn = new Random();
@@ -216,14 +221,14 @@ public class ConvexPolygon extends Polygon {
 		case 0 :			
 			p = new Point(points.get(i).getX(), this.mutationPositionY(points.get(i).getY(), max));
 
-			System.out.println("0 ---- POINT de "+points.get(i).getY()+" à "+p.getY());
+//			System.out.println("0 ---- POINT Y de "+points.get(i).getY()+" à "+p.getY());
 			points.set(i, p);
 
 			break;
 		case 1 :
 			p = new Point(this.mutationPositionX(points.get(i).getX(), max), points.get(i).getY());
 
-			System.out.println("1 ---- POINT de "+points.get(i).getX()+" à "+p.getX());
+//			System.out.println("1 ---- POINT X de "+points.get(i).getX()+" à "+p.getX());
 			points.set(i, p);
 
 			break;
@@ -231,7 +236,7 @@ public class ConvexPolygon extends Polygon {
 
 			p = new Point(this.mutationPositionX(points.get(i).getX(), max), this.mutationPositionY(points.get(i).getY(), max));
 
-			System.out.println("2 ---- POINT de "+points.get(i).getX()+" et "+points.get(i).getY()+" à "+p.getX()+" et "+p.getY());
+//			System.out.println("2 ---- POINT XY de "+points.get(i).getX()+" et "+points.get(i).getY()+" à "+p.getX()+" et "+p.getY());
 
 			points.set(i, p);
 
@@ -266,6 +271,7 @@ public class ConvexPolygon extends Polygon {
 				ret = opacity-var;
 			}
 		}
+//		System.out.println("0 ---- OPACITY de "+opacity+" à "+ret);
 		return ret;
 	}
 
