@@ -147,7 +147,7 @@ public class ConvexPolygon extends Polygon {
 	}
 
 
-	
+
 	/*
 	 * 
 	 * 
@@ -155,101 +155,101 @@ public class ConvexPolygon extends Polygon {
 
 	public void mutate(int rate) {
 		Random rn = new Random();
+		int randomRate = rn.nextInt(101); 
 		int index=0;
 		int choix;
-
 		
-			//System.out.println("INNNNNSSSSIIIIIDDDDEEEEE----------------------------------------------");
-			//parcourir les points et aléatoirement changer x et/ou y ou non
-			//for(Point p : points) {
-
-			choix=rn.nextInt(3);
-			int i = rn.nextInt(points.size());
-			Point p;
-			switch (choix) {
-			case 0 :
-				//points.add(index,new Point(p.getX(), rn.nextInt(MAXY)));
-
-				p = new Point(points.get(i).getX(), this.mutationPositionY(points.get(i).getY()));
-
-				//					System.out.println("Cas 1");
-				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-				//					System.out.println(p.getX()+"	"+p.getY());
-
-				points.set(i, p);
-
-				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-				break;
-			case 1 :
-				//points.add(index, new Point(rn.nextInt(MAXX), p.getY()));
-
-				p = new Point(this.mutationPositionX(points.get(i).getX()), points.get(i).getY());
-
-				//					System.out.println("Cas 2");
-				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-				//					System.out.println(p.getX()+"	"+p.getY());
-
-				points.set(i, p);
-
-				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-				break;
-			case 2 :
-				//points.add(index, new Point(rn.nextInt(MAXX), rn.nextInt(MAXY)));
-
-				p = new Point(this.mutationPositionX(points.get(i).getX()), this.mutationPositionY(points.get(i).getY()));
-
-				//					System.out.println("Cas 3");
-				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-				//					System.out.println(p.getX()+"	"+p.getY());
-
-				points.set(i, p);
-
-				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-				break;
-			}
-
-			//aléatoirement : prendre changer une nuance de couleur
-			Color clr = (Color) this.getFill();
-			double red = clr.getRed();
-			double blue = clr.getBlue();
-			double green = clr.getGreen();
-
-
-
-			choix = rn.nextInt(3);
-			switch(choix) {
-			case 0 :
-				//changer red
-				//				System.out.println("red");
-				this.setFill(Color.color(this.mutationColor(red),green, blue));
-				break;
-			case 1 :
-				//changer blue
-				//				System.out.println("blue");
-				this.setFill(Color.color(red,green, this.mutationColor(blue))) ;
-				break;
-			case 2 :
-				//changer green
-				//				System.out.println("green");
-				this.setFill(Color.color(red,this.mutationColor(green), blue)) ;
-				break;
-			}
+		if(randomRate < rate) {
 			
-			if(rn.nextBoolean()) {
-				this.setOpacity(this.mutateOpacity(this.getOpacity()));
-			}
-		
-	}
+			this.mutationPoint(10);
 
+			this.mutateColor(10);
+			
+			this.mutateOpacity(6);
+		}
+
+	}
+	
+	private void mutateColor(int max) {
+		//aléatoirement : prendre changer une nuance de couleur
+		Color clr = (Color) this.getFill();
+		double red = clr.getRed();
+		double blue = clr.getBlue();
+		double green = clr.getGreen();
+
+
+		int choix;
+		Random rn = new Random();
+		choix = rn.nextInt(3);
+		switch(choix) {
+		case 0 :
+			//changer red
+			double red_new = this.mutationColor(red, max);
+			this.setFill(Color.color(red_new,green, blue));
+			System.out.println("0 ---- COLOR red de "+red+" à "+red_new);
+
+			
+			break;
+		case 1 :
+			//changer blue
+			double blue_new = this.mutationColor(blue, max);
+			this.setFill(Color.color(red,green, blue_new)) ;
+			System.out.println("0 ---- COLOR blue de "+blue+" à "+blue_new);
+			break;
+		case 2 :
+			//changer green
+			double green_new = this.mutationColor(green, max);
+			this.setFill(Color.color(red,green_new, blue));
+			System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
+			break;
+		}
+	}
+	
+	
+	private void mutationPoint(int max) {
+		int choix;
+		Random rn = new Random();
+		choix=rn.nextInt(3);
+		int i = rn.nextInt(points.size());
+		Point p;
+		switch (choix) {
+		case 0 :			
+			p = new Point(points.get(i).getX(), this.mutationPositionY(points.get(i).getY(), max));
+
+			System.out.println("0 ---- POINT de "+points.get(i).getY()+" à "+p.getY());
+			points.set(i, p);
+
+			break;
+		case 1 :
+			p = new Point(this.mutationPositionX(points.get(i).getX(), max), points.get(i).getY());
+
+			System.out.println("1 ---- POINT de "+points.get(i).getX()+" à "+p.getX());
+			points.set(i, p);
+
+			break;
+		case 2 :
+
+			p = new Point(this.mutationPositionX(points.get(i).getX(), max), this.mutationPositionY(points.get(i).getY(), max));
+
+			System.out.println("2 ---- POINT de "+points.get(i).getX()+" et "+points.get(i).getY()+" à "+p.getX()+" et "+p.getY());
+
+			points.set(i, p);
+
+			break;
+		}
+	}
+	private void mutateOpacity(int max) {
+		this.setOpacity(this.mutationOpacity(max));
+	}
 	/*
 	 * 
 	 */
-	private double mutateOpacity(double opacity) {
+	private double mutationOpacity(int max) {
 		double ret;
 		Random rn = new Random();
-		double var = rn.nextInt(11);
+		double var = rn.nextInt(max);
 		var = var / 100;
-
+		double opacity = this.getOpacity();
 		if(rn.nextBoolean()) {
 			if((opacity+var) > 1.0) {
 				ret = 1.0;
@@ -268,15 +268,15 @@ public class ConvexPolygon extends Polygon {
 		}
 		return ret;
 	}
-	
+
 	/*
 	 * 
 	 * 
 	 */
-	private double mutationPositionX(double position) {
+	private double mutationPositionX(double position, int max) {
 		double ret;
 		Random rn = new Random();
-		int var = rn.nextInt(12);
+		int var = rn.nextInt(max);
 
 		if(rn.nextBoolean()) {
 			if((position+var) > max_X) {
@@ -301,10 +301,10 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 * 
 	 */
-	private double mutationPositionY(double position) {
+	private double mutationPositionY(double position, int max) {
 		double ret;
 		Random rn = new Random();
-		int var = rn.nextInt(12);
+		int var = rn.nextInt(max);
 
 		if(rn.nextBoolean()) {
 			if((position+var) > max_Y) {
@@ -328,10 +328,10 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 * 
 	 */
-	private double mutationColor(double couleur) {
+	private double mutationColor(double couleur, int max) {
 		double ret;
 		Random rn = new Random();
-		double var = rn.nextInt(12);
+		double var = rn.nextInt(max);
 		var = var / 100;
 		if(rn.nextBoolean()) {
 			if((couleur+var) > 1.0) {
@@ -353,30 +353,30 @@ public class ConvexPolygon extends Polygon {
 	}
 
 
-	
+
 
 	public Color getColor() {
 		return (Color) this.getFill();
 	}
 
-	
-/*
- * 
- * 
- * 
- * 
- * 
- * NO UTLITY
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */
-	
+
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * NO UTLITY
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+
 	public ConvexPolygon crossover(ConvexPolygon cp) {
 		Random rn = new Random();
 		ConvexPolygon child;
@@ -429,7 +429,7 @@ public class ConvexPolygon extends Polygon {
 		return child;
 
 	}
-	
+
 	public Color avgRandomColor(Color c1, Color c2) {
 		Random rn = new Random();
 		// je divise par 100 sinon t'as un coef qui marche pas, et 101 car exclusif et pas inclusif
@@ -460,116 +460,6 @@ public class ConvexPolygon extends Polygon {
 		double ret = o1*coef + o2*(1-coef);
 		return ret;
 	}
-	public void mutateA(int pourcentage) {
-		Random rn = new Random();
-		int index=0;
-		int choix;
 
-		int pourc = rn.nextInt(101);
-		if(pourc < pourcentage) {
-			//parcourir les points et aléatoirement changer x et/ou y ou non
-			//for(Point p : points) {
-			for(int i=0; i < points.size(); i++) {
-				choix=rn.nextInt(4);
-				Point p;
-				switch (choix) {
-				case 0 :
-					//points.add(index,new Point(p.getX(), rn.nextInt(MAXY)));
-
-					p = new Point(points.get(i).getX(), rn.nextInt(max_Y));
-
-					//					System.out.println("Cas 1");
-					//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-					//					System.out.println(p.getX()+"	"+p.getY());
-
-					points.set(i, p);
-
-					//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-					break;
-				case 1 :
-					//points.add(index, new Point(rn.nextInt(MAXX), p.getY()));
-
-					p = new Point(rn.nextInt(max_X), points.get(i).getY());
-
-					//					System.out.println("Cas 2");
-					//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-					//					System.out.println(p.getX()+"	"+p.getY());
-
-					points.set(i, p);
-
-					//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-					break;
-				case 2 :
-					//points.add(index, new Point(rn.nextInt(MAXX), rn.nextInt(MAXY)));
-
-					p = new Point(rn.nextInt(max_X), rn.nextInt(max_Y));
-
-					//					System.out.println("Cas 3");
-					//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-					//					System.out.println(p.getX()+"	"+p.getY());
-
-					points.set(i, p);
-
-					//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
-					break;
-				case 3 :
-					//					System.out.println("Cas break");
-					break;
-				}
-				index++;
-			}
-
-			//aléatoirement : prendre changer une nuance de couleur
-			Color clr = (Color) this.getFill();
-			double red = clr.getRed();
-			double blue = clr.getBlue();
-			double green = clr.getGreen();
-
-			double mutation = rn.nextInt(21);
-			mutation = mutation / 100;
-
-			choix = rn.nextInt(8);
-			switch(choix) {
-			case 0 :
-				//changer red
-				//				System.out.println("red");
-				this.setFill(Color.color(this.mutationColor(red),green, blue));
-				break;
-			case 1 :
-				//changer blue
-				//				System.out.println("blue");
-				this.setFill(Color.color(red,green, this.mutationColor(blue))) ;
-				break;
-			case 2 :
-				//changer green
-				//				System.out.println("green");
-				this.setFill(Color.color(red,this.mutationColor(green), blue)) ;
-				break;
-			case 3 :
-				//				System.out.println("red, green");
-				this.setFill(Color.color(this.mutationColor(red),this.mutationColor(green), blue)) ;
-				break;
-
-			case 4 :
-				//				System.out.println("red, blue");
-				this.setFill(Color.color(this.mutationColor(red), green, this.mutationColor(blue))) ;
-				break;
-
-			case 5 :
-				//				System.out.println("green, blue");
-				this.setFill(Color.color(red, this.mutationColor(green), this.mutationColor(blue))) ;
-				break;
-
-			case 6 :
-				//				System.out.println("3 couleurs");
-				this.setFill(Color.color(this.mutationColor(red), this.mutationColor(green), this.mutationColor(blue))) ;
-				break;
-			case 7 :
-				//				System.out.println("BREAK");
-				break;
-			}
-		}
-	}
-	
 
 }

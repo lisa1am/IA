@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -25,6 +26,7 @@ public class Population {
 	private Individual best;
 	private Color[][] target;
 	private int select;
+	int genNumber;
 	
 	private final static int MAXX=100;
 	private final static int MAXY=149;
@@ -39,6 +41,7 @@ public class Population {
 			
 			listBest = new ArrayList<Individual>();
 			this.select = 10;
+			this.genNumber = 1;
 		}
 	
 	
@@ -117,22 +120,51 @@ public class Population {
 			individuals.add(listBest.get(j));
 		}
 		
-		for(int k = 0; k < individuals.size(); k++) {
-			individuals.get(k).mutation(5);
-		}
+
+		this.mutation(5, 10);
+		
 		
 		
 	}
 	
-	public void mutation(int pourcentage) {
-		for(int i = 0; i< listBest.size(); i++) {
-			listBest.get(i).mutation(pourcentage);
+	public void crossoverOneFOREachRandom(int probability, int rate) {
+		for(int j = 0; j < listBest.size(); j++) {
+			System.out.println("Best numero : "+(j+1)+" : "+listBest.get(j).getFitness());;
+		}
+		
+		System.out.println("\n \n");
+		
+		for(int t = 0; t < 3; t++) {
+		for(int i = 0; i < listBest.size(); i++) {
+			Collections.shuffle(listBest.get(i).getIndividu());
+		}
+		
+		for(int i = 0; i < listBest.size(); i++) {
+			for(int j = 0; j < listBest.size(); j++) {
+				if(i != j) {
+				individuals.add(listBest.get(i).crossoverRandom(listBest.get(j)));
+				}
+			}
+		}
+		}
+		
+		for(int j=0; j < listBest.size(); j++) {	
+			individuals.add(listBest.get(j));
+		}
+		
+
+		this.mutation(probability, rate);	
+	}
+	
+	public void mutation(int probability, int rate) {
+		for(int i = 0; i< individuals.size(); i++) {
+			individuals.get(i).mutation(probability, rate);
 		}
 	}
 	
 	
 	public Individual testA() {
-		
+		System.out.println("\n ********************** GENERATION "+this.genNumber+" ********************** \n");
 		sortByFitness();
 		
 //		for(int i = 0; i < individuals.size(); i++) {
@@ -151,12 +183,13 @@ public class Population {
 //		}
 		individuals.clear();
 		sortByFitnessBest();
-		this.crossoverOneFOREach();
-		
+		//this.crossoverOneFOREach();
+		this.crossoverOneFOREachRandom(5, 10);
 		
 		//this.crossoverOneEach();
 		//this.crossoverTwoEach();
 		//this.crossoverThreeEach();
+		this.genNumber++;
 		return this.getBest();
 	}
 	

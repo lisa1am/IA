@@ -10,6 +10,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Group;
@@ -17,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Individual implements Comparable{
@@ -28,10 +30,11 @@ public class Individual implements Comparable{
 	int maxX;
 	int maxY;
 
+
 	public Individual(int nbPoints) {
 		this.individu = new ArrayList<ConvexPolygon>();
 		for(int i = 0; i < 50; i++) {
-			ConvexPolygon cp = new ConvexPolygon(3);
+			ConvexPolygon cp = new ConvexPolygon(nbPoints);
 			individu.add(cp);
 		}
 		this.MiseaJour();
@@ -80,6 +83,11 @@ public class Individual implements Comparable{
 
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
+		Rectangle rectangle = new Rectangle();
+		rectangle.setWidth(ConvexPolygon.max_X);
+		rectangle.setHeight(ConvexPolygon.max_Y);
+		rectangle.setFill(Color.BLACK);
+		image.getChildren().add(rectangle);
 		for (ConvexPolygon p : this.individu)
 			image.getChildren().add(p);
 
@@ -138,21 +146,22 @@ public class Individual implements Comparable{
 
 
 
-	public void mutation(int pourcentage) {
-
-
+	public void mutation(int probability, int rate) {
 		Random rn = new Random();
 		int pourc = rn.nextInt(101);
-		if(pourc < pourcentage) {
-			System.out.println("AVANT : "+this.getFitness());			
-			for(int i = 0; i < this.individu.size(); i++) {
-				this.individu.get(i).mutate(12);
-			}
-			this.fitnessScore();
-			System.out.println("APRES : "+this.getFitness()+"\n");
-			
+		
+		if(pourc < probability) {
+		System.out.println("AVANT : "+this.getFitness());			
+		for(int i = 0; i < this.individu.size(); i++) {
+			this.individu.get(i).mutate(rate);
 		}
+		this.fitnessScore();
+		System.out.println("APRES : "+this.getFitness()+"\n");
+		}
+		
+
 	}
+
 
 
 
@@ -250,35 +259,28 @@ public class Individual implements Comparable{
 		Individual ret = new Individual();
 		Random rn = new Random();
 		int random;
-		ArrayList<Integer> savethis = new ArrayList<Integer>();
-		ArrayList<Integer> saveind = new ArrayList<Integer>();
-
-
-		for(int i =0; i < 25; i++) {
-			random = rn.nextInt(50);
-			while(savethis.contains(random)) {
-				random = rn.nextInt(50);
-			}
-			savethis.add(random);
-		}
-
-		for(int i =0; i < 25; i++) {
-			random = rn.nextInt(50);
-			while(saveind.contains(random)) {
-				random = rn.nextInt(50);
-			}
-			saveind.add(random);
-		}
 
 		int insert;
 
 		for(int i = 0; i < this.individu.size(); i++) {
-			insert = i/2;
-			if(i%2==0) {
-				ret.individu.add(this.individu.get(savethis.get(insert)));
+			insert = i;
+			if(i%2 == 0) {
+				while(ret.individu.contains(this.individu.get(insert))) {
+					insert++;
+					if(insert == 50) {
+						insert = 0;
+					}
+				}
+				ret.individu.add(this.individu.get(insert));
 			}
 			else {
-				ret.individu.add(ind.individu.get(saveind.get(insert)));
+				while(ret.individu.contains(ind.individu.get(insert))) {
+					insert++;
+					if(insert == this.individu.size()) {
+						insert = 0;
+					}
+				}
+				ret.individu.add(ind.individu.get(insert));
 			}
 		}
 		ret.fitnessScore();

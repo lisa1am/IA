@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Test extends Application{
@@ -58,13 +59,17 @@ public class Test extends Application{
 		
 		Individual ind = pop.testA();
 		
-		while(ind.getFitness() > 70) {
+		while(ind.getFitness() > 20) {
 			ind = pop.testA();
 		}
 		
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
-		
+		Rectangle rectangle = new Rectangle();
+		rectangle.setWidth(ConvexPolygon.max_X);
+		rectangle.setHeight(ConvexPolygon.max_Y);
+		rectangle.setFill(Color.BLACK);
+		image.getChildren().add(rectangle);
 		// 
 		// créer un polygone noir qui prend la taille de l'image et qui se fixe en premier
 		// 
