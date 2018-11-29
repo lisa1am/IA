@@ -38,23 +38,8 @@ public class Population {
 			}	
 			
 			listBest = new ArrayList<Individual>();
-			this.select = 30;
+			this.select = 10;
 		}
-
-	
-	//récuprére le meilleur individu de la population selon son fitnessScore
-	public Individual fittest(){
-		double maxFit = Integer.MIN_VALUE;
-        int maxFitIndex = 0;
-        for (int i = 0; i < individuals.size(); i++) {
-            if (maxFit <= individuals.get(i).getFitness()) {
-                maxFit = individuals.get(i).getFitness();
-                maxFitIndex = i;
-            }
-        }
-        fittest = individuals.get(maxFitIndex).getFitness();
-        return individuals.get(maxFitIndex);	
-	}
 	
 	
 	public void add(Individual ind) {
@@ -132,6 +117,10 @@ public class Population {
 			individuals.add(listBest.get(j));
 		}
 		
+		for(int k = 0; k < individuals.size(); k++) {
+			individuals.get(k).mutation(5);
+		}
+		
 		
 	}
 	
@@ -157,12 +146,12 @@ public class Population {
 //			System.out.println("AFFICHAGE : "+listBest.get(i).getFitness());
 //		}
 		
-		if(this.select > 20) {
-			this.select--;
-		}
+//		if(this.select > 20) {
+//			this.select--;
+//		}
 		individuals.clear();
 		sortByFitnessBest();
-		this.crossoverOneEach();
+		this.crossoverOneFOREach();
 		
 		
 		//this.crossoverOneEach();
@@ -251,5 +240,18 @@ public class Population {
 			individuals.add(listBest.get(i+1).crossoverRandom(listBest.get(i)));
 			i++;
 		}
+	}
+	
+	public Individual fittest(){
+		double maxFit = Integer.MIN_VALUE;
+        int maxFitIndex = 0;
+        for (int i = 0; i < individuals.size(); i++) {
+            if (maxFit <= individuals.get(i).getFitness()) {
+                maxFit = individuals.get(i).getFitness();
+                maxFitIndex = i;
+            }
+        }
+        fittest = individuals.get(maxFitIndex).getFitness();
+        return individuals.get(maxFitIndex);	
 	}
 }

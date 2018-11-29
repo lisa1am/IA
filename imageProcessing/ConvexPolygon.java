@@ -153,7 +153,7 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 */
 
-	public void mutate(int pourcentage) {
+	public void mutate(int rate) {
 		Random rn = new Random();
 		int index=0;
 		int choix;
@@ -163,7 +163,7 @@ public class ConvexPolygon extends Polygon {
 			//parcourir les points et aléatoirement changer x et/ou y ou non
 			//for(Point p : points) {
 
-			choix=rn.nextInt(4);
+			choix=rn.nextInt(3);
 			int i = rn.nextInt(points.size());
 			Point p;
 			switch (choix) {
@@ -206,9 +206,6 @@ public class ConvexPolygon extends Polygon {
 
 				//					System.out.println(points.get(i).getX()+"	"+points.get(i).getY());
 				break;
-			case 3 :
-				//					System.out.println("Cas break");
-				break;
 			}
 
 			//aléatoirement : prendre changer une nuance de couleur
@@ -219,7 +216,7 @@ public class ConvexPolygon extends Polygon {
 
 
 
-			choix = rn.nextInt(4);
+			choix = rn.nextInt(3);
 			switch(choix) {
 			case 0 :
 				//changer red
@@ -235,10 +232,6 @@ public class ConvexPolygon extends Polygon {
 				//changer green
 				//				System.out.println("green");
 				this.setFill(Color.color(red,this.mutationColor(green), blue)) ;
-				break;
-
-			case 3 :
-				//				System.out.println("BREAK");
 				break;
 			}
 			
@@ -283,7 +276,7 @@ public class ConvexPolygon extends Polygon {
 	private double mutationPositionX(double position) {
 		double ret;
 		Random rn = new Random();
-		int var = rn.nextInt(9);
+		int var = rn.nextInt(12);
 
 		if(rn.nextBoolean()) {
 			if((position+var) > max_X) {
@@ -311,7 +304,7 @@ public class ConvexPolygon extends Polygon {
 	private double mutationPositionY(double position) {
 		double ret;
 		Random rn = new Random();
-		int var = rn.nextInt(9);
+		int var = rn.nextInt(12);
 
 		if(rn.nextBoolean()) {
 			if((position+var) > max_Y) {
@@ -338,7 +331,7 @@ public class ConvexPolygon extends Polygon {
 	private double mutationColor(double couleur) {
 		double ret;
 		Random rn = new Random();
-		double var = rn.nextInt(9);
+		double var = rn.nextInt(12);
 		var = var / 100;
 		if(rn.nextBoolean()) {
 			if((couleur+var) > 1.0) {

@@ -20,14 +20,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Individual implements Comparable{
-	
+
 	private double fitness;
 	private ArrayList<ConvexPolygon> individu;
 	String targetImage;
 	Color[][] target;
 	int maxX;
 	int maxY;
-	
+
 	public Individual(int nbPoints) {
 		this.individu = new ArrayList<ConvexPolygon>();
 		for(int i = 0; i < 50; i++) {
@@ -37,17 +37,17 @@ public class Individual implements Comparable{
 		this.MiseaJour();
 		this.fitnessScore();
 	}
-	
+
 	public Individual() {
 		this.MiseaJour();
 		this.individu = new ArrayList<ConvexPolygon>();
 	}
 
 	public ArrayList<ConvexPolygon> getIndividu(){
-		
+
 		return this.individu;
 	}
-	
+
 	public void MiseaJour() {
 		targetImage = "monaLisa-100.jpg";
 		maxX = 0;
@@ -56,27 +56,27 @@ public class Individual implements Comparable{
 			BufferedImage bi = ImageIO.read(new File(targetImage));
 			maxX = bi.getWidth();
 			maxY = bi.getHeight();
-        	ConvexPolygon.max_X= maxX;
-        	ConvexPolygon.max_Y= maxY;
-        	target = new Color[maxX][maxY];
-        	for (int i=0;i<maxX;i++){
-        		for (int j=0;j<maxY;j++){
-        			int argb = bi.getRGB(i, j);
-        			int b = (argb)&0xFF;
-        			int g = (argb>>8)&0xFF;
-        			int r = (argb>>16)&0xFF;
-        			int a = (argb>>24)&0xFF;
-        			target[i][j] = Color.rgb(r,g,b);
-        		}
-        	}
-        }
-        catch(IOException e){
-        	System.err.println(e);
-        	System.exit(9);
-        }
-}
-		//System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
-		public void fitnessScore() {
+			ConvexPolygon.max_X= maxX;
+			ConvexPolygon.max_Y= maxY;
+			target = new Color[maxX][maxY];
+			for (int i=0;i<maxX;i++){
+				for (int j=0;j<maxY;j++){
+					int argb = bi.getRGB(i, j);
+					int b = (argb)&0xFF;
+					int g = (argb>>8)&0xFF;
+					int r = (argb>>16)&0xFF;
+					int a = (argb>>24)&0xFF;
+					target[i][j] = Color.rgb(r,g,b);
+				}
+			}
+		}
+		catch(IOException e){
+			System.err.println(e);
+			System.exit(9);
+		}
+	}
+	//System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
+	public void fitnessScore() {
 
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
@@ -101,7 +101,7 @@ public class Individual implements Comparable{
 			}
 		}
 		//System.out.println("Fitness Score d'un individual: "+Math.sqrt(res));
-		
+
 		this.fitness = Math.sqrt(res);
 	}
 
@@ -109,13 +109,14 @@ public class Individual implements Comparable{
 		return this.fitness;
 	}
 
-		
+
 	public Individual getIndividual() {
 		return this;
 	}
 
 	public Individual crossoverOneEach(Individual ind) {
 		Individual ret = new Individual();
+
 		for(int i = 0; i < this.individu.size(); i++) {
 			if(i%2 == 0) {
 				ret.individu.add(this.individu.get(i));
@@ -125,31 +126,35 @@ public class Individual implements Comparable{
 			}
 		}
 		//ret.fitnessScore();
-		//System.out.println("AVANT MUTATION : \t"+ind.getFitness()+" et "+this.getFitness()+"\t fitness :"+ret.getFitness());
-		ret.mutation(5);
+		//System.out.println("AVANT : "+ind.getFitness()+" et "+this.getFitness()+" enfant = "+ret.getFitness());
+		// mutation d'un enfant avec une chance de 5%
+		//ret.mutation(5);
+		//System.out.println("APRES : "+ind.getFitness()+" et "+this.getFitness()+" enfant = "+ret.getFitness());
+		//calcul de son fitnessScore qu'il est été muté ou pas
 		ret.fitnessScore();
-		//System.out.println("Nouvelle enfant entre : \t"+ind.getFitness()+" et "+this.getFitness()+"\t fitness :"+ret.getFitness()+"\n");
 		return ret;
 	}
-	
-	
-	
-	
+
+
+
+
 	public void mutation(int pourcentage) {
-		
-		
+
+
 		Random rn = new Random();
 		int pourc = rn.nextInt(101);
 		if(pourc < pourcentage) {
-			//System.out.println("GOOOOOOO ------------");
-		for(int i = 0; i < this.individu.size(); i++) {
-			this.individu.get(i).mutate(12);
-		}
-		this.fitnessScore();
+			System.out.println("AVANT : "+this.getFitness());			
+			for(int i = 0; i < this.individu.size(); i++) {
+				this.individu.get(i).mutate(12);
+			}
+			this.fitnessScore();
+			System.out.println("APRES : "+this.getFitness()+"\n");
+			
 		}
 	}
-	
-	
+
+
 
 	@Override
 	public int compareTo(Object o) {
@@ -164,27 +169,27 @@ public class Individual implements Comparable{
 			}
 		}
 	}
-	
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- *  NE SERT A RIEN DESSOUS CA, ENFIN JE M EN SERS PAS
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 	
- */
+
+	/*
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 *  NE SERT A RIEN DESSOUS CA, ENFIN JE M EN SERS PAS
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 	
+	 */
 	public Individual crossoverTwoEach(Individual ind) {
 		Individual ret = new Individual();
 		int index = 0;
@@ -197,7 +202,7 @@ public class Individual implements Comparable{
 				ret.individu.add(ind.individu.get(i));
 				index++;
 			}
-			
+
 			if(index == 4) {
 				index = 0;
 			}
@@ -205,7 +210,7 @@ public class Individual implements Comparable{
 		ret.fitnessScore();
 		return ret;
 	}
-	
+
 	public Individual crossoverThreeEach(Individual ind) {
 		Individual ret = new Individual();
 		int index = 0;
@@ -218,7 +223,7 @@ public class Individual implements Comparable{
 				ret.individu.add(ind.individu.get(i));
 				index++;
 			}
-			
+
 			if(index == 6) {
 				index = 0;
 			}
@@ -226,7 +231,7 @@ public class Individual implements Comparable{
 		ret.fitnessScore();
 		return ret;
 	}
-	
+
 	public Individual crossoverMiddle(Individual ind) {
 		Individual ret = new Individual();
 		for(int i = 0; i < this.individu.size(); i++) {
@@ -247,8 +252,8 @@ public class Individual implements Comparable{
 		int random;
 		ArrayList<Integer> savethis = new ArrayList<Integer>();
 		ArrayList<Integer> saveind = new ArrayList<Integer>();
-		
-		
+
+
 		for(int i =0; i < 25; i++) {
 			random = rn.nextInt(50);
 			while(savethis.contains(random)) {
@@ -256,7 +261,7 @@ public class Individual implements Comparable{
 			}
 			savethis.add(random);
 		}
-		
+
 		for(int i =0; i < 25; i++) {
 			random = rn.nextInt(50);
 			while(saveind.contains(random)) {
@@ -264,17 +269,17 @@ public class Individual implements Comparable{
 			}
 			saveind.add(random);
 		}
-		
+
 		int insert;
-		
+
 		for(int i = 0; i < this.individu.size(); i++) {
 			insert = i/2;
-				if(i%2==0) {
-					ret.individu.add(this.individu.get(savethis.get(insert)));
-				}
-				else {
-					ret.individu.add(ind.individu.get(saveind.get(insert)));
-				}
+			if(i%2==0) {
+				ret.individu.add(this.individu.get(savethis.get(insert)));
+			}
+			else {
+				ret.individu.add(ind.individu.get(saveind.get(insert)));
+			}
 		}
 		ret.fitnessScore();
 		return ret;
