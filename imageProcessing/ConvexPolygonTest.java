@@ -89,7 +89,7 @@ public class ConvexPolygonTest extends TestCase {
 //			System.out.println(ind.points.get(i).getY());
 			ind2.points.set(i, p);
 		}
-		ind.mutate();
+		ind.mutate(20);
 		
 		assertTrue("Verification nb point egal", ind2.points.size() == ind.points.size());
 		
@@ -118,7 +118,7 @@ public class ConvexPolygonTest extends TestCase {
 		
 //		System.out.println("Couleur base : \n RED : "+red+"\n GREEN : "+green+"\n BLUE : "+blue);
 		
-		ind.mutate();
+		ind.mutate(20);
 		
 		double red2 = ind.getColor().getRed();
 		double green2 = ind.getColor().getGreen();

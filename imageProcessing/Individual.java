@@ -40,6 +40,14 @@ public class Individual implements Comparable{
 		this.MiseaJour();
 		this.fitnessScore();
 	}
+	
+	public Individual(Individual ind) {
+		this.individu= ind.individu;
+		this.fitness= ind.fitness;
+		this.maxX= ind.maxX;
+		this.maxY= ind.maxY;
+		this.target= ind.target;
+	}
 
 	public Individual() {
 		this.MiseaJour();
@@ -150,22 +158,27 @@ public class Individual implements Comparable{
 		Random rn = new Random();
 		int pourc = rn.nextInt(101);
 		
-		if(pourc < probability) {
-		System.out.println("MUTATION DU FITNESS : "+this.getFitness());
-		System.out.println("AVANT : "+this.getFitness());			
-		for(int i = 0; i < this.individu.size(); i++) {
-			this.individu.get(i).mutate(rate);
-		}
-		this.fitnessScore();
-		System.out.println("APRES : "+this.getFitness()+"\n");
-		}
 		
-
+		if(pourc < probability) {
+			//System.out.println("__________________________________");
+			//System.out.println("AVANT THIS: "+this.getFitness());			
+			for(int i = 0; i < this.individu.size(); i++) {
+				this.individu.get(i).mutate(rate);
+			}
+			this.fitnessScore();
+			//this.fitnessScore();
+			//System.out.println("APRES TMP: "+tmpInd.getFitness()+"\n");
+		}
 	}
 
 
 
-
+	public void setIndividu(ArrayList<ConvexPolygon> liste) {
+		this.individu.clear();
+		this.individu=liste;
+		this.fitnessScore();
+	}
+	
 	@Override
 	public int compareTo(Object o) {
 		Individual ind = (Individual) o;

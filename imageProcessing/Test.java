@@ -59,7 +59,7 @@ public class Test extends Application{
 		
 		Individual ind = pop.testA();
 		
-		while(ind.getFitness() > 25) {
+		while(ind.getFitness() > 30) {
 			ind = pop.testA();
 		}
 		
@@ -74,6 +74,10 @@ public class Test extends Application{
 		// créer un polygone noir qui prend la taille de l'image et qui se fixe en premier
 		// 
 		//
+		System.out.println("avant : "+ind.getFitness());
+		ind.fitnessScore();
+		System.out.println("apres : "+ind.getFitness());
+		
 		for (ConvexPolygon p : ind.getIndividu())
 			image.getChildren().add(p);
 		
@@ -90,8 +94,8 @@ public class Test extends Application{
 			for (int j=0;j<maxY;j++){
 				Color c = pr.getColor(i, j);
 				res += Math.pow(c.getBlue()-target[i][j].getBlue(),2)
-				+Math.pow(c.getRed()-target[i][j].getRed(),2)
-				+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
+						+Math.pow(c.getRed()-target[i][j].getRed(),2)
+						+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
 			}
 		}
 		System.out.println(Math.sqrt(res));

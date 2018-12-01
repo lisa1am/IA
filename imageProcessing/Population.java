@@ -52,6 +52,7 @@ public class Population {
 	public void sortByFitness() {
 		Collections.sort(individuals, new IndividualComparator());
 		this.best = this.individuals.get(0);
+		System.out.println("BEST : "+this.best.getFitness());
 	}
 	
 	public void sortByFitnessBest() {
@@ -60,7 +61,7 @@ public class Population {
 	}
 	
 	public Individual getBest() {
-		this.sortByFitnessBest();
+		this.sortByFitness();
 		return best;
 	}
 	
@@ -75,7 +76,7 @@ public class Population {
 			listBest.add(individuals.get(i));
 		}
 		
-		System.out.println("BEST :"+listBest.get(0).getFitness());
+		//System.out.println("BEST :"+listBest.get(0).getFitness());
 	}
 	
 	
@@ -163,7 +164,11 @@ public class Population {
 	public void mutation(int probability, int rate) {
 		for(int i = 0; i< individuals.size(); i++) {
 			individuals.get(i).mutation(probability, rate);
+			individuals.get(i).fitnessScore();
 		}
+		this.sortByFitness();
+		this.selection(genSize);
+		this.sortByFitnessBest();
 	}
 	
 	
@@ -181,7 +186,7 @@ public class Population {
 
 		individuals.clear();
 		sortByFitnessBest();
-		this.crossoverOneFOREachRandom(5, 10);
+		this.crossoverOneFOREachRandom(3, 5);
 		
 
 		this.genNumber++;

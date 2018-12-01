@@ -157,27 +157,87 @@ public class ConvexPolygon extends Polygon {
 		Random rn = new Random();
 		int randomRate = rn.nextInt(101); 
 		int index=0;
-		int choix = rn.nextInt(3);
+		int choix = rn.nextInt(8);
 		if(randomRate < rate) {
 			switch(choix) {
 			case 0 : 
 				this.mutationPoint(6);
+				//System.out.println("MUTATE POINT");
 				break;
 			case 1 :
+				this.setFill(this.getColor().brighter());
+				break;
+			case 2 :
+				this.setFill(this.getColor().darker());
+				break;
+			case 3 :
 				this.mutateColor(5);
+				//System.out.println("MUTATE COLOR");
 				break;
-			case 2:
+			case 4:
 				this.mutateOpacity(5);
+				//System.out.println("MUTATE OPACITY");
 				break;
+			case 5:
+				this.mutateInverse();
+				//System.out.println("MUTATE INVRSE");
+				break;
+			case 6:
+				this.mutateTranslate(rn.nextInt(max_X), rn.nextInt(max_Y));
+				//System.out.println("MUTATE TRANSLATE");
+				break;
+			case 7:
+				this.mutateChangePolygon();
+				//System.out.println("MUTATE CHANGE POLYGON");
+				break;
+			
 			}
 
 		}
 
 	}
+	
+	private void mutateTranslate(int distx, int disty) {
+		boolean[] contained = new boolean[points.size()];
+		for(int i=0; i<points.size(); i++) {
+			/*if(((points.get(i).getX()+distx)>max_X)||((points.get(i).getY()+disty)>max_Y)
+					||((points.get(i).getX()+distx)<0)||((points.get(i).getY()+disty)<0)) {
+				return;
+			}else {
+				points.get(i).translate(distx, disty);
+			}*/
+			if((((points.get(i).getX()+distx)<max_X)&&((points.get(i).getX()+distx)>0))
+			&&(((points.get(i).getX()+disty)<max_Y)&&((points.get(i).getY()+disty)>0))){
+				contained[i]=true;
+			}else {
+				contained[i]=false;
+			}
+		}
+		for(int i=0; i<contained.length; i++) {
+			if(contained[i]) {
+				points.get(i).translate(distx,  disty);
+			}
+		}
+	}
+	
+	private void mutateInverse() {
+		Point tmp = points.get(0);
+		for(int i=1; i<points.size(); i++) {
+			points.set(i-1, points.get(i));
+		}
+		points.set(points.size()-1, tmp);
+	}
+	
+	private void mutateChangePolygon() {
+		this.mutateColor(5);
+		this.mutationPoint(30);
+		this.mutateOpacity(5);
+		
+	}
 
 	private void mutateColor(int max) {
 		//aléatoirement : prendre changer une nuance de couleur
-		Color clr = (Color) this.getFill();
+		Color clr = (Color) this.getColor();
 		double red = clr.getRed();
 		double blue = clr.getBlue();
 		double green = clr.getGreen();
@@ -185,7 +245,7 @@ public class ConvexPolygon extends Polygon {
 
 		int choix;
 		Random rn = new Random();
-		choix = rn.nextInt(3);
+		choix = rn.nextInt();
 		switch(choix) {
 		case 0 :
 			//changer red
@@ -206,6 +266,13 @@ public class ConvexPolygon extends Polygon {
 			double green_new = this.mutationColor(green, max);
 			this.setFill(Color.color(red,green_new, blue));
 //			System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
+			break;
+		case 3 :
+			this.setFill(this.getColor().brighter());
+			break;
+			
+		case 4 :
+			this.setFill(this.getColor().darker());
 			break;
 		}
 	}
