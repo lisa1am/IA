@@ -32,13 +32,10 @@ public class Individual implements Comparable{
 
 
 	public Individual(int nbPoints) {
+		Random rn = new Random();
 		this.individu = new ArrayList<ConvexPolygon>();
-		for(int i = 0; i < 50; i++) {
-			ConvexPolygon cp = new ConvexPolygon(nbPoints);
-			individu.add(cp);
-		}
-		this.MiseaJour();
-		this.fitnessScore();
+		this.MiseaJour();		
+		//this.fitnessScore();
 	}
 	
 	public Individual(Individual ind) {
@@ -55,7 +52,6 @@ public class Individual implements Comparable{
 	}
 
 	public ArrayList<ConvexPolygon> getIndividu(){
-
 		return this.individu;
 	}
 
@@ -86,16 +82,10 @@ public class Individual implements Comparable{
 			System.exit(9);
 		}
 	}
-	//System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
+	
 	public void fitnessScore() {
-
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
-		Rectangle rectangle = new Rectangle();
-		rectangle.setWidth(ConvexPolygon.max_X);
-		rectangle.setHeight(ConvexPolygon.max_Y);
-		rectangle.setFill(Color.BLACK);
-		image.getChildren().add(rectangle);
 		for (ConvexPolygon p : this.individu)
 			image.getChildren().add(p);
 
@@ -129,28 +119,6 @@ public class Individual implements Comparable{
 	public Individual getIndividual() {
 		return this;
 	}
-
-	public Individual crossoverOneEach(Individual ind) {
-		Individual ret = new Individual();
-
-		for(int i = 0; i < this.individu.size(); i++) {
-			if(i%2 == 0) {
-				ret.individu.add(this.individu.get(i));
-			}
-			else {
-				ret.individu.add(ind.individu.get(i));
-			}
-		}
-		//ret.fitnessScore();
-		//System.out.println("AVANT : "+ind.getFitness()+" et "+this.getFitness()+" enfant = "+ret.getFitness());
-		// mutation d'un enfant avec une chance de 5%
-		//ret.mutation(5);
-		//System.out.println("APRES : "+ind.getFitness()+" et "+this.getFitness()+" enfant = "+ret.getFitness());
-		//calcul de son fitnessScore qu'il est été muté ou pas
-		ret.fitnessScore();
-		return ret;
-	}
-
 
 
 
@@ -193,114 +161,4 @@ public class Individual implements Comparable{
 		}
 	}
 
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 *  NE SERT A RIEN DESSOUS CA, ENFIN JE M EN SERS PAS
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 	
-	 */
-	public Individual crossoverTwoEach(Individual ind) {
-		Individual ret = new Individual();
-		int index = 0;
-		for(int i = 0; i < this.individu.size(); i++) {
-			if(index < 2) {
-				ret.individu.add(this.individu.get(i));
-				index++;
-			}
-			else {
-				ret.individu.add(ind.individu.get(i));
-				index++;
-			}
-
-			if(index == 4) {
-				index = 0;
-			}
-		}
-		ret.fitnessScore();
-		return ret;
-	}
-
-	public Individual crossoverThreeEach(Individual ind) {
-		Individual ret = new Individual();
-		int index = 0;
-		for(int i = 0; i < this.individu.size(); i++) {
-			if(index < 3) {
-				ret.individu.add(this.individu.get(i));
-				index++;
-			}
-			else {
-				ret.individu.add(ind.individu.get(i));
-				index++;
-			}
-
-			if(index == 6) {
-				index = 0;
-			}
-		}
-		ret.fitnessScore();
-		return ret;
-	}
-
-	public Individual crossoverMiddle(Individual ind) {
-		Individual ret = new Individual();
-		for(int i = 0; i < this.individu.size(); i++) {
-			if(i <= 24) {
-				ret.individu.add(this.individu.get(i));
-			}
-			else {
-				ret.individu.add(ind.individu.get(i));
-			}
-		}
-		ret.fitnessScore();
-		return ret;
-	}
-
-	public Individual crossoverRandom(Individual ind) {
-		Individual ret = new Individual();
-		Random rn = new Random();
-		int random;
-
-		int insert;
-
-		for(int i = 0; i < this.individu.size(); i++) {
-			insert = i;
-			if(i%2 == 0) {
-				while(ret.individu.contains(this.individu.get(insert))) {
-					insert++;
-					if(insert == 50) {
-						insert = 0;
-					}
-				}
-				ret.individu.add(this.individu.get(insert));
-			}
-			else {
-				while(ret.individu.contains(ind.individu.get(insert))) {
-					insert++;
-					if(insert == this.individu.size()) {
-						insert = 0;
-					}
-				}
-				ret.individu.add(ind.individu.get(insert));
-			}
-		}
-		ret.fitnessScore();
-//		if(ret.getFitness() < ind.getFitness() && ret.getFitness() < this.getFitness()) {
-//		System.out.println("Enfant entre : "+this.getFitness()+" et "+ind.getFitness()+" = = = "+ret.getFitness());
-//		}
-		return ret;
-	}
 }

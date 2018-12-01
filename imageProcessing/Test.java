@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -54,29 +55,29 @@ public class Test extends Application{
         }
 		System.out.println("Read target image " + targetImage + " " + maxX + "x" + maxY);
 		
-		// génération de 10 triangles
-		Population pop = new Population(200);
-		
-		Individual ind = pop.testA();
-		
-		while(ind.getFitness() > 30) {
-			ind = pop.testA();
+
+		Random rn = new Random();
+		Individual ind = new Individual(5);
+		int nbp = rn.nextInt(4)+3;
+		ConvexPolygon tmpPoly = new ConvexPolygon(nbp);
+		ind.getIndividu().add(0,tmpPoly);
+		double fitness = tmpPoly.checkfitness(target);
+		while(fitness>80) {
+			tmpPoly.mutate(100);
+			if(fitness>tmpPoly.checkfitness(target)) {
+				fitness = tmpPoly.checkfitness(target);
+				ind.getIndividu().set(0,tmpPoly);
+			}
+			System.out.println("LOCAL FITNESS OF POLYGON TEMP = "+tmpPoly.getFitness());
 		}
 		
-		// formation de l'image par superposition des polygones
+		System.out.println(tmpPoly);
+		System.out.println("LOCAL FITNESS OF POLYGON = "+tmpPoly.checkfitness(target));
+
+		
+		
 		Group image = new Group();
-		Rectangle rectangle = new Rectangle();
-		rectangle.setWidth(ConvexPolygon.max_X);
-		rectangle.setHeight(ConvexPolygon.max_Y);
-		rectangle.setFill(Color.BLACK);
-		image.getChildren().add(rectangle);
-		// 
-		// créer un polygone noir qui prend la taille de l'image et qui se fixe en premier
-		// 
-		//
-		System.out.println("avant : "+ind.getFitness());
-		ind.fitnessScore();
-		System.out.println("apres : "+ind.getFitness());
+		
 		
 		for (ConvexPolygon p : ind.getIndividu())
 			image.getChildren().add(p);
@@ -89,7 +90,7 @@ public class Test extends Application{
 		// On utilise le PixelReader pour lire chaque couleur
 		// ici, on calcule la somme de la distance euclidienne entre le vecteur (R,G,B)
 		// de la couleur du pixel cible et celui du pixel de l'image générée	
-		double res=0;
+		/*double res=0;
 		for (int i=0;i<maxX;i++){
 			for (int j=0;j<maxY;j++){
 				Color c = pr.getColor(i, j);
@@ -98,7 +99,7 @@ public class Test extends Application{
 						+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
 			}
 		}
-		System.out.println(Math.sqrt(res));
+		System.out.println(Math.sqrt(res));*/
 		
 		// Stockage de l'image dans un fichier .png
 		RenderedImage renderedImage = SwingFXUtils.fromFXImage(wimg, null); 

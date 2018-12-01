@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Random;
 
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 
 
 
@@ -21,10 +25,12 @@ public class ConvexPolygon extends Polygon {
 	NumberFormat nf = new DecimalFormat("##.00");
 	static int max_X;
 	static int max_Y;
+	double fitness;
+	int maxX, maxY, minX, minY;
 	List<Point> points = new ArrayList<Point>();
 
 
-	// randomly generates a polygon
+	//generates a random polygon
 	public ConvexPolygon(int numPoints){
 		super();
 		genRandomConvexPolygone(numPoints);
@@ -34,17 +40,62 @@ public class ConvexPolygon extends Polygon {
 		int b = gen.nextInt(256);
 		this.setFill(Color.rgb(r, g, b));
 		this.setOpacity(gen.nextDouble());
+		this.initBounds();
 	}
 
 	public ConvexPolygon(){
 		super();
 	}
 
+	public void initBounds() {
+		ArrayList<Integer> X = new ArrayList<Integer>();
+		ArrayList<Integer> Y = new ArrayList<Integer>();
+		
+		for(int i=0; i<points.size(); i++) {
+			X.add(i,points.get(i).getX());
+			Y.add(i,points.get(i).getY());
+		}
+		
+		minX= Collections.min(X);
+		minY= Collections.min(Y);
+		maxX= Collections.max(X);
+		maxY= Collections.max(Y);
+		
+	}
 
 	public List<Point> pointsList() {
 		return points;
 	}
+	
+	public double checkfitness(Color[][] target) {
+		double fitness=0;
+		
+		Group image = new Group();
+		image.getChildren().add(this);
+		
+		WritableImage wimg = new WritableImage(max_X,max_Y);
+		image.snapshot(null,wimg);
+		PixelReader pr = wimg.getPixelReader();
+		
+		System.out.println("minx= "+minX+" maxx= "+maxX+" miny= "+minY+" maxy= "+maxY);
+		
+		for(int i=minX; i<maxX; i++) {
+			for(int j=minY; j<maxY; j++) {
+				Color c = pr.getColor(i, j);
+				//System.out.println("x="+i+" y="+j);
+				//System.out.println("TARGET BLUE "+target[i][j].getBlue());
+				fitness += Math.pow(c.getBlue()-target[i][j].getBlue(),2)
+						+Math.pow(c.getRed()-target[i][j].getRed(),2)
+						+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
+			}
+		}
+		this.fitness=Math.sqrt(fitness);
+		return(Math.sqrt(fitness));
+	}
 
+	public double getFitness() {
+		return fitness;
+	}
 
 	public String toString(){
 		String res = super.toString();
@@ -158,7 +209,9 @@ public class ConvexPolygon extends Polygon {
 		int randomRate = rn.nextInt(101); 
 		int index=0;
 		int choix = rn.nextInt(8);
-		if(randomRate < rate) {
+		
+		
+		if(true) {
 			switch(choix) {
 			case 0 : 
 				this.mutationPoint(6);
@@ -245,7 +298,7 @@ public class ConvexPolygon extends Polygon {
 
 		int choix;
 		Random rn = new Random();
-		choix = rn.nextInt();
+		choix = rn.nextInt(5);
 		switch(choix) {
 		case 0 :
 			//changer red
@@ -286,14 +339,14 @@ public class ConvexPolygon extends Polygon {
 		Point p;
 		switch (choix) {
 		case 0 :			
-			p = new Point(points.get(i).getX(), this.mutationPositionY(points.get(i).getY(), max));
+			p = new Point(points.get(i).getX(), this.mutationPositionY(points.get(i).getY(), max_Y));
 
 //			System.out.println("0 ---- POINT Y de "+points.get(i).getY()+" à "+p.getY());
 			points.set(i, p);
 
 			break;
 		case 1 :
-			p = new Point(this.mutationPositionX(points.get(i).getX(), max), points.get(i).getY());
+			p = new Point(this.mutationPositionX(points.get(i).getX(), max_X), points.get(i).getY());
 
 //			System.out.println("1 ---- POINT X de "+points.get(i).getX()+" à "+p.getX());
 			points.set(i, p);
@@ -319,7 +372,7 @@ public class ConvexPolygon extends Polygon {
 	private double mutationOpacity(int max) {
 		double ret;
 		Random rn = new Random();
-		double var = rn.nextInt(max);
+		double var = rn.nextInt();
 		var = var / 100;
 		double opacity = this.getOpacity();
 		if(rn.nextBoolean()) {
@@ -346,10 +399,10 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 * 
 	 */
-	private double mutationPositionX(double position, int max) {
-		double ret;
+	private int mutationPositionX(int position, int max) {
+		int ret;
 		Random rn = new Random();
-		int var = rn.nextInt(max);
+		int var = rn.nextInt();
 
 		if(rn.nextBoolean()) {
 			if((position+var) > max_X) {
@@ -374,10 +427,10 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 * 
 	 */
-	private double mutationPositionY(double position, int max) {
-		double ret;
+	private int mutationPositionY(int position, int max) {
+		int ret;
 		Random rn = new Random();
-		int var = rn.nextInt(max);
+		int var = rn.nextInt();
 
 		if(rn.nextBoolean()) {
 			if((position+var) > max_Y) {

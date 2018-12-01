@@ -9,7 +9,7 @@ import java.util.Random;
 public class Point {
 
 	
-	private double x,y;
+	private int x,y;
 	
 	private static Random gen = new Random();
 	private static int max_X, max_Y;
@@ -25,13 +25,13 @@ public class Point {
 		y= gen.nextInt(max_Y);
 	}
 	
-	public Point(double x, double y){
+	public Point(int x, int y){
 		this.x=x;
 		this.y=y;
 	}
 	
-	public double getX(){return x;}
-	public double getY(){return y;}
+	public int getX(){return x;}
+	public int getY(){return y;}
 	public void translate(int vx,int vy){
 		x += vx;
 		y += vy;
