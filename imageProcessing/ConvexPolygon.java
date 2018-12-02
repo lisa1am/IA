@@ -92,8 +92,8 @@ public class ConvexPolygon extends Polygon {
 				
 			}
 		}
-		this.fitness=Math.sqrt(fitness)/this.area();
-		return(Math.sqrt(fitness)/this.area());
+		this.fitness=(max_X*max_Y)*Math.sqrt(fitness)/this.area();
+		return(this.fitness);
 	}
 
 	public double getFitness() {
@@ -264,10 +264,10 @@ public class ConvexPolygon extends Polygon {
 	public void mutate() {
 		
 		//DARKER
-		//this.setFill(this.getColor().darker());
+		this.setFill(this.getColor().darker());
 		
 		//CHANGE COLOR
-		//this.mutateColor();
+		this.mutateColor();
 		
 		//TRANSLATE
 		this.mutateTranslate(gen.nextInt(max_X), gen.nextInt(max_Y));
