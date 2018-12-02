@@ -31,10 +31,12 @@ public class Point {
 	}
 	
 	public int getX(){return x;}
+	
 	public int getY(){return y;}
+	
 	public void translate(int vx,int vy){
-		x += vx;
-		y += vy;
+			x += vx;
+			y += vy;
 	}
 	
 	public boolean equals(Object o){
@@ -46,6 +48,10 @@ public class Point {
 			return ((Point) o).x== this.x && ((Point) o).y== this.y;
 		else
 			return false;
+	}
+	
+	public double crossProduct(Point p) {
+		return ((this.x * p.y) - ( this.y * p.x));
 	}
 	
 	public String toString(){

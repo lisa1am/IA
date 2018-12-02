@@ -131,7 +131,7 @@ public class Individual implements Comparable{
 			//System.out.println("__________________________________");
 			//System.out.println("AVANT THIS: "+this.getFitness());			
 			for(int i = 0; i < this.individu.size(); i++) {
-				this.individu.get(i).mutate(rate);
+				this.individu.get(i).mutate();
 			}
 			this.fitnessScore();
 			//this.fitnessScore();

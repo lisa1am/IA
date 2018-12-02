@@ -60,15 +60,18 @@ public class Test extends Application{
 		Individual ind = new Individual(5);
 		int nbp = rn.nextInt(4)+3;
 		ConvexPolygon tmpPoly = new ConvexPolygon(nbp);
+		System.out.println("area = "+tmpPoly.area());
 		ind.getIndividu().add(0,tmpPoly);
 		double fitness = tmpPoly.checkfitness(target);
-		while(fitness>80) {
-			tmpPoly.mutate(100);
+		while(fitness<0.008) {
+			tmpPoly = new ConvexPolygon(rn.nextInt(4)+3);
+			System.out.println("area = "+tmpPoly.area());
 			if(fitness>tmpPoly.checkfitness(target)) {
-				fitness = tmpPoly.checkfitness(target);
+				fitness = tmpPoly.getFitness();
 				ind.getIndividu().set(0,tmpPoly);
+				System.out.println("LOCAL FITNESS OF POLYGON TEMP = "+tmpPoly.getFitness());
 			}
-			System.out.println("LOCAL FITNESS OF POLYGON TEMP = "+tmpPoly.getFitness());
+			
 		}
 		
 		System.out.println(tmpPoly);
