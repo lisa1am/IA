@@ -19,6 +19,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 public class Individual implements Comparable{
@@ -29,34 +30,23 @@ public class Individual implements Comparable{
 	Color[][] target;
 	int maxX;
 	int maxY;
+	int area=0;
 
 
 	public Individual(int nbPoints) {
 		Random rn = new Random();
 		this.individu = new ArrayList<ConvexPolygon>();
-		this.MiseaJour();		
+		this.Init();		
 		//this.fitnessScore();
 	}
-	
-	public Individual(Individual ind) {
-		this.individu= ind.individu;
-		this.fitness= ind.fitness;
-		this.maxX= ind.maxX;
-		this.maxY= ind.maxY;
-		this.target= ind.target;
-	}
 
-	public Individual() {
-		this.MiseaJour();
-		this.individu = new ArrayList<ConvexPolygon>();
-	}
 
 	public ArrayList<ConvexPolygon> getIndividu(){
 		return this.individu;
 	}
 
-	public void MiseaJour() {
-		targetImage = "monaLisa-100.jpg";
+	public void Init() {
+		targetImage = "monaLisa-200.jpg";
 		maxX = 0;
 		maxY = 0;
 		try{
@@ -83,7 +73,52 @@ public class Individual implements Comparable{
 		}
 	}
 	
+	public double localFitness() {
+		double fit=0;
+		boolean contains= false;
+		int localArea=0;
+		
+		Group image = new Group();
+		for(ConvexPolygon p : individu) {
+			image.getChildren().add(p);
+		}
+		
+		
+		WritableImage wimg = new WritableImage(maxX,maxY);
+		image.snapshot(null,wimg);
+		PixelReader pr = wimg.getPixelReader();
+		
+		
+		
+		//System.out.println("minx= "+minX+" maxx= "+maxX+" miny= "+minY+" maxy= "+maxY);
+		System.out.println("checking local fitness");
+		for(int i=0; i<maxX; i++) {
+			for(int j=0; j<maxY; j++) {
+				Color c = pr.getColor(i, j);
+				for(ConvexPolygon p : individu) {
+					contains=contains||(p.contains(i,j));
+				}
+				if(contains){
+					localArea++;
+					fit += Math.abs(c.getBlue()-target[i][j].getBlue())
+							+Math.abs(c.getRed()-target[i][j].getRed())
+							+Math.abs(c.getGreen()-target[i][j].getGreen());
+				}
+				
+			}
+		}
+		fit= (1-(fit/(3*area)))*100;
+		//fit = Math.sqrt(fit);
+		//fit=(1-( Math.sqrt(fit)/localArea))*100;
+		System.out.println("LOCAL FITNESS = "+fit);
+		area=localArea;
+		return(fit);
+	}
+	
+	
 	public void fitnessScore() {
+		
+		int area=0;
 		// formation de l'image par superposition des polygones
 		Group image = new Group();
 		for (ConvexPolygon p : this.individu)
@@ -100,28 +135,61 @@ public class Individual implements Comparable{
 		double res=0;
 		for (int i=0;i<maxX;i++){
 			for (int j=0;j<maxY;j++){
+				area++;
 				Color c = pr.getColor(i, j);
-				res += Math.pow(c.getBlue()-target[i][j].getBlue(),2)
-						+Math.pow(c.getRed()-target[i][j].getRed(),2)
-						+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
+				res += Math.abs(c.getBlue()-target[i][j].getBlue())
+						+Math.abs(c.getRed()-target[i][j].getRed())
+						+Math.abs(c.getGreen()-target[i][j].getGreen());
 			}
 		}
 		//System.out.println("Fitness Score d'un individual: "+Math.sqrt(res));
 
-		this.fitness = Math.sqrt(res);
+		this.fitness = (1-(res/(3*area)))*100;
 	}
 
 	public double getFitness() {
 		return this.fitness;
 	}
 
-
-	public Individual getIndividual() {
-		return this;
+	public void putPolygons(int nbPoly) {
+		
+		Random rn = new Random();
+		ConvexPolygon poly, tmpPoly;
+		double fitness;
+		
+		
+		
+		// 50 polygons
+		for(int i=0; i<nbPoly; i++) {
+			poly = new ConvexPolygon(rn.nextInt(4)+5);
+			individu.add(i, poly);
+			fitness = this.localFitness();
+			
+			while(this.localFitness()<60){
+				tmpPoly = new ConvexPolygon(rn.nextInt(4)+5);
+				individu.set(i, tmpPoly);
+				if(fitness>this.localFitness()) {
+					System.out.println("old = "+fitness+" new = "+this.localFitness());
+					fitness = this.localFitness();
+					individu.set(i,tmpPoly);
+				}	
+			}
+			System.out.println("*****************"+i);
+		}
+		fitnessScore();
+		System.out.println("FITNESS ----- = "+ this.fitness);
 	}
-
-
-
+	
+	
+	/*
+	 * 
+	 * 
+	 * MUTATIONS
+	 * 
+	 * 
+	 */
+	
+	
 	public void mutation(int probability, int rate) {
 		Random rn = new Random();
 		int pourc = rn.nextInt(101);
@@ -137,14 +205,6 @@ public class Individual implements Comparable{
 			//this.fitnessScore();
 			//System.out.println("APRES TMP: "+tmpInd.getFitness()+"\n");
 		}
-	}
-
-
-
-	public void setIndividu(ArrayList<ConvexPolygon> liste) {
-		this.individu.clear();
-		this.individu=liste;
-		this.fitnessScore();
 	}
 	
 	@Override

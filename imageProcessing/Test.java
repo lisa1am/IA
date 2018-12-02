@@ -27,7 +27,7 @@ public class Test extends Application{
 	}
 	
 	public void start(Stage myStage){
-		String targetImage = "monaLisa-100.jpg";
+		String targetImage = "monaLisa-200.jpg";
 		Color[][] target=null;
 		int maxX=0;
     	int maxY=0;
@@ -57,40 +57,52 @@ public class Test extends Application{
 		
 
 		Random rn = new Random();
-		Individual ind = new Individual(5);
-		int nbp = rn.nextInt(4)+3;
+		/*Individual ind = new Individual(5);
+		//int nbp = rn.nextInt(4)+3;
 		ConvexPolygon tmpPoly;
 		
-		for(int i=0; i<3; i++) {
-			tmpPoly = new ConvexPolygon(nbp);
-			System.out.println("area = "+tmpPoly.area());
+		for(int i=0; i<50; i++) {
+			System.out.println("_______________________________________________");
+			tmpPoly = new ConvexPolygon(rn.nextInt(4)+3);
 			ind.getIndividu().add(i,tmpPoly);
 			double fitness = tmpPoly.checkfitness(target);
+			System.out.println("fitness = "+tmpPoly.getFitness());
+			System.out.println("area = "+tmpPoly.getArea());
 			
-			while(fitness>90) {
+			while(tmpPoly.getFitness()<80) {
+				System.out.println("HERE");
 				tmpPoly = new ConvexPolygon(rn.nextInt(4)+3);
 				//tmpPoly.mutate();
-				System.out.println("area = "+tmpPoly.area());
 				if(fitness>tmpPoly.checkfitness(target)) {
+					System.out.println("area = "+tmpPoly.getArea());
+					System.out.println("old = "+fitness+" new = "+tmpPoly.getFitness());
 					fitness = tmpPoly.getFitness();
 					ind.getIndividu().set(i,tmpPoly);
-					System.out.println("LOCAL FITNESS OF POLYGON TEMP = "+tmpPoly.getFitness());
 				}	
 			}
+			System.out.println("fitness = "+ tmpPoly.getFitness());
 			System.out.println(tmpPoly);
-			System.out.println("LOCAL FITNESS OF POLYGON = "+tmpPoly.checkfitness(target));
-		}
+		}*/
 		
-		
-		
-
+		Individual ind = new Individual(rn.nextInt(4)+3);
+		ind.putPolygons(50);
+		System.out.println("IND SIZE = "+ind.getIndividu().size());
 		
 		
 		Group image = new Group();
 		
 		
-		for (ConvexPolygon p : ind.getIndividu())
+		for (ConvexPolygon p : ind.getIndividu()) {
 			image.getChildren().add(p);
+		}
+		
+		//MUTATE
+		
+		
+		
+		
+		
+			
 		
 		// Calcul de la couleur de chaque pixel.Pour cela, on passe par une instance de 
 		// WritableImage, qui possède une méthode pour obtenir un PixelReader.

@@ -26,6 +26,7 @@ public class ConvexPolygon extends Polygon {
 	static int max_X;
 	static int max_Y;
 	double fitness;
+	double area=0;
 	int maxX, maxY, minX, minY;
 	List<Point> points = new ArrayList<Point>();
 
@@ -68,7 +69,7 @@ public class ConvexPolygon extends Polygon {
 	}
 	
 	public double checkfitness(Color[][] target) {
-		double fitness=0;
+		double fit=0;
 		
 		Group image = new Group();
 		image.getChildren().add(this);
@@ -82,18 +83,24 @@ public class ConvexPolygon extends Polygon {
 		for(int i=0; i<max_X; i++) {
 			for(int j=0; j<max_Y; j++) {
 				Color c = pr.getColor(i, j);
-				//System.out.println("x="+i+" y="+j);
-				//System.out.println("TARGET BLUE "+target[i][j].getBlue());
 				if(this.contains(i, j)){
-					fitness += Math.pow(c.getBlue()-target[i][j].getBlue(),2)
-							+Math.pow(c.getRed()-target[i][j].getRed(),2)
-							+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
+					area++;
+					fit += Math.abs(c.getBlue()-target[i][j].getBlue())
+							+Math.abs(c.getRed()-target[i][j].getRed())
+							+Math.abs(c.getGreen()-target[i][j].getGreen());
 				}
 				
 			}
 		}
-		this.fitness=(max_X*max_Y)*Math.sqrt(fitness)/this.area();
+		this.fitness= (1-(fit/(3*area)))*100;
+		//this.fitness= 100-100*(Math.sqrt(fit)/area);
+		System.out.println(this.fitness);
+		//this.fitness=Math.sqrt(fit);
 		return(this.fitness);
+	}
+	
+	public double getArea() {
+		return area;
 	}
 
 	public double getFitness() {
@@ -261,16 +268,19 @@ public class ConvexPolygon extends Polygon {
 	        return Math.abs(sum)/2;
 	    }
 	
-	public void mutate() {
+	public ConvexPolygon mutate() {
+		ConvexPolygon p = this;
 		
 		//DARKER
-		this.setFill(this.getColor().darker());
+		p.setFill(this.getColor().darker());
 		
 		//CHANGE COLOR
-		this.mutateColor();
+		p.mutateColor();
+		 
+		return p;
 		
 		//TRANSLATE
-		this.mutateTranslate(gen.nextInt(max_X), gen.nextInt(max_Y));
+		//this.mutateTranslate(gen.nextInt(max_X), gen.nextInt(max_Y));
 		
 		
 	}
