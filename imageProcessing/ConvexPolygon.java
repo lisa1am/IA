@@ -43,7 +43,20 @@ public class ConvexPolygon extends Polygon {
 		this.setOpacity(gen.nextDouble());
 		this.updateMinMax();
 	}
+	
+	
+	public ConvexPolygon(ConvexPolygon p) {
+		ConvexPolygon ret= new ConvexPolygon(3);
+		ret.setFill(Color.color(p.getColor().getRed(),p.getColor().getGreen(), p.getColor().getBlue()));
+		ret.setOpacity(p.getOpacity());
+		ret.points=p.points;
+		/*for(Point point : p.points) {
+			ret.points.add(point);
+		}*/
+	}
 
+	
+	
 	public ConvexPolygon(){
 		super();
 	}

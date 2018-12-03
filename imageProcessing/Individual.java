@@ -41,6 +41,7 @@ public class Individual implements Comparable{
 	}
 
 
+
 	public ArrayList<ConvexPolygon> getIndividu(){
 		return this.individu;
 	}
@@ -73,7 +74,7 @@ public class Individual implements Comparable{
 		}
 	}
 	
-	public double localFitness() {
+	public double localFitness(ConvexPolygon poly) {
 		double fit=0;
 		boolean contains= false;
 		int localArea=0;
@@ -95,10 +96,10 @@ public class Individual implements Comparable{
 		for(int i=0; i<maxX; i++) {
 			for(int j=0; j<maxY; j++) {
 				Color c = pr.getColor(i, j);
-				for(ConvexPolygon p : individu) {
+				/*for(ConvexPolygon p : individu) {
 					contains=contains||(p.contains(i,j));
-				}
-				if(contains){
+				}*/
+				if(poly.contains(i, j)){
 					localArea++;
 					fit += Math.abs(c.getBlue()-target[i][j].getBlue())
 							+Math.abs(c.getRed()-target[i][j].getRed())
@@ -161,18 +162,22 @@ public class Individual implements Comparable{
 		
 		// 50 polygons
 		for(int i=0; i<nbPoly; i++) {
-			poly = new ConvexPolygon(rn.nextInt(4)+5);
+			poly = new ConvexPolygon(3);
 			individu.add(i, poly);
-			fitness = this.localFitness();
+			fitness = this.localFitness(poly);
+			tmpPoly = new ConvexPolygon(poly);
 			
-			while(this.localFitness()<60){
-				tmpPoly = new ConvexPolygon(rn.nextInt(4)+5);
-				individu.set(i, tmpPoly);
-				if(fitness>this.localFitness()) {
-					System.out.println("old = "+fitness+" new = "+this.localFitness());
-					fitness = this.localFitness();
-					individu.set(i,tmpPoly);
-				}	
+			while(this.localFitness(poly)<80){
+				poly = new ConvexPolygon(3);
+				//poly.mutate();
+				if(this.localFitness(poly) > fitness) {
+					fitness = this.localFitness(poly);
+				}else {
+					poly = new ConvexPolygon(tmpPoly);
+				}
+				
+				tmpPoly = new ConvexPolygon(poly);
+					
 			}
 			System.out.println("*****************"+i);
 		}
