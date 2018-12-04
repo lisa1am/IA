@@ -33,11 +33,22 @@ public class Individual implements Comparable{
 	int area=0;
 
 
-	public Individual(int nbPoints) {
+	public Individual() {
 		Random rn = new Random();
 		this.individu = new ArrayList<ConvexPolygon>();
 		this.Init();		
 		//this.fitnessScore();
+	}
+	
+	public Individual(Individual ind) {
+		this.individu = new ArrayList<ConvexPolygon>();
+		for(ConvexPolygon p : ind.getIndividu()) {
+			this.getIndividu().add(new ConvexPolygon(p));
+		}
+		this.maxX = ind.maxX;
+		this.maxY = ind.maxY;
+		this.target = ind.target;
+		this.fitness = ind.fitness;
 	}
 
 
@@ -47,7 +58,7 @@ public class Individual implements Comparable{
 	}
 
 	public void Init() {
-		targetImage = "monaLisa-200.jpg";
+		targetImage = "monaLisa-100.jpg";
 		maxX = 0;
 		maxY = 0;
 		try{
@@ -76,29 +87,22 @@ public class Individual implements Comparable{
 	
 	public double localFitness(ConvexPolygon poly) {
 		double fit=0;
-		boolean contains= false;
 		int localArea=0;
 		
 		Group image = new Group();
 		for(ConvexPolygon p : individu) {
-			image.getChildren().add(p);
+			image.getChildren().add(new ConvexPolygon(p.getColor(), p.points));
 		}
-		
 		
 		WritableImage wimg = new WritableImage(maxX,maxY);
 		image.snapshot(null,wimg);
 		PixelReader pr = wimg.getPixelReader();
 		
 		
-		
-		//System.out.println("minx= "+minX+" maxx= "+maxX+" miny= "+minY+" maxy= "+maxY);
-		System.out.println("checking local fitness");
 		for(int i=0; i<maxX; i++) {
 			for(int j=0; j<maxY; j++) {
 				Color c = pr.getColor(i, j);
-				/*for(ConvexPolygon p : individu) {
-					contains=contains||(p.contains(i,j));
-				}*/
+		
 				if(poly.contains(i, j)){
 					localArea++;
 					fit += Math.abs(c.getBlue()-target[i][j].getBlue())
@@ -108,16 +112,16 @@ public class Individual implements Comparable{
 				
 			}
 		}
-		fit= (1-(fit/(3*area)))*100;
-		//fit = Math.sqrt(fit);
-		//fit=(1-( Math.sqrt(fit)/localArea))*100;
-		System.out.println("LOCAL FITNESS = "+fit);
-		area=localArea;
-		return(fit);
+		fit = fit/(3*localArea);
+		fit = 1- fit;
+		fit = fit*100;
+		System.out.println(fit);
+		
+		return (fit);
 	}
 	
 	
-	public void fitnessScore() {
+	public double fitnessScore() {
 		
 		int area=0;
 		// formation de l'image par superposition des polygones
@@ -134,8 +138,8 @@ public class Individual implements Comparable{
 		// ici, on calcule la somme de la distance euclidienne entre le vecteur (R,G,B)
 		// de la couleur du pixel cible et celui du pixel de l'image générée	
 		double res=0;
-		for (int i=0;i<maxX;i++){
-			for (int j=0;j<maxY;j++){
+		for(int i=0;i<maxX;i++){
+			for(int j=0;j<maxY;j++){
 				area++;
 				Color c = pr.getColor(i, j);
 				res += Math.abs(c.getBlue()-target[i][j].getBlue())
@@ -145,46 +149,100 @@ public class Individual implements Comparable{
 		}
 		//System.out.println("Fitness Score d'un individual: "+Math.sqrt(res));
 
-		this.fitness = (1-(res/(3*area)))*100;
+		
+		this.fitness = res/(3*area);
+		this.fitness= 1 - this.fitness;
+		this.fitness = this.fitness*100;
+		return (this.fitness);
 	}
+	
+	public void updateFitnessScore() {
+		this.fitness= this.fitnessScore();
+	}
+	
 
 	public double getFitness() {
 		return this.fitness;
 	}
 
 	public void putPolygons(int nbPoly) {
-		
+	
+		ConvexPolygon poly, before;
 		Random rn = new Random();
-		ConvexPolygon poly, tmpPoly;
-		double fitness;
-		
-		
-		
+
 		// 50 polygons
+		//new
 		for(int i=0; i<nbPoly; i++) {
 			poly = new ConvexPolygon(3);
-			individu.add(i, poly);
-			fitness = this.localFitness(poly);
-			tmpPoly = new ConvexPolygon(poly);
 			
-			while(this.localFitness(poly)<80){
-				poly = new ConvexPolygon(3);
+			while((poly.checkfitness(target)<80)||(poly.getArea()<((maxX*maxY)/200))) {
 				//poly.mutate();
-				if(this.localFitness(poly) > fitness) {
-					fitness = this.localFitness(poly);
-				}else {
-					poly = new ConvexPolygon(tmpPoly);
-				}
-				
-				tmpPoly = new ConvexPolygon(poly);
-					
+				poly = new ConvexPolygon(3);
 			}
-			System.out.println("*****************"+i);
+			
+			individu.add(poly);	
+			System.out.println("local fitness = "+poly.checkfitness(target));
+			System.out.println(i);
 		}
-		fitnessScore();
-		System.out.println("FITNESS ----- = "+ this.fitness);
+		
+		//mutation
+		/*for(int i=0; i<nbPoly; i++) {
+			poly = new ConvexPolygon(3);
+			before = new ConvexPolygon(poly);
+			System.out.println(poly);
+			
+			while((poly.checkfitness(target)<40)||(poly.getArea()<((maxX*maxY)/200))) {
+				poly.mutate();
+				if(before.checkfitness(target)<poly.checkfitness(target)) {
+					poly = new ConvexPolygon(before);
+				}
+			}
+			individu.add(poly);
+			System.out.println(poly);
+			System.out.println("local fitness = "+poly.checkfitness(target));	
+			
+		}*/
+		
+		
+		
+		System.out.println("FITNESS = "+this.fitnessScore());
 	}
 	
+	public void mutate() {
+		Random rn = new Random();
+		int nbPoly = rn.nextInt(this.getIndividu().size());
+		int index;
+		
+		for(int i=0; i<nbPoly; i++) {
+			//MUTATE
+			System.out.println("IND BEFORE= "+this.fitnessScore());
+			index = rn.nextInt(this.getIndividu().size());
+			this.getIndividu().get(index).mutate();
+			System.out.println("IND AFTER= "+this.fitnessScore());
+			
+		}
+		updateFitnessScore();
+	}
+	
+	
+	
+	public Individual draw() {
+		
+		Individual indTemp, ind = new Individual(this);
+		
+		while(ind.fitnessScore()<70) {	
+			indTemp = new Individual(ind);
+			ind.mutate();
+			// l'individu était meilleur avant la mutation
+			if(ind.fitnessScore()<indTemp.fitnessScore()) {
+				ind = new Individual(indTemp);
+			}
+			System.out.println("IND FINAL = "+ ind.fitnessScore()+"\n\n");
+		}
+		return ind;
+		
+		
+	}
 	
 	/*
 	 * 

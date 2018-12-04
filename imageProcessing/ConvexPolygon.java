@@ -26,7 +26,7 @@ public class ConvexPolygon extends Polygon {
 	static int max_X;
 	static int max_Y;
 	double fitness;
-	double area=0;
+	int area= 0;
 	int maxX, maxY, minX, minY;
 	List<Point> points = new ArrayList<Point>();
 
@@ -34,48 +34,45 @@ public class ConvexPolygon extends Polygon {
 	//generates a random polygon
 	public ConvexPolygon(int numPoints){
 		super();
-		genRandomConvexPolygone(numPoints);
+		genRandomTriangle();
+		//genRandomConvexPolygone(numPoints);
 		//System.out.println(points.size());
 		int r = gen.nextInt(256);
 		int g = gen.nextInt(256);
 		int b = gen.nextInt(256);
 		this.setFill(Color.rgb(r, g, b));
 		this.setOpacity(gen.nextDouble());
-		this.updateMinMax();
 	}
 	
 	
-	public ConvexPolygon(ConvexPolygon p) {
+	public ConvexPolygon(Color c, List<Point> p) {
 		ConvexPolygon ret= new ConvexPolygon(3);
-		ret.setFill(Color.color(p.getColor().getRed(),p.getColor().getGreen(), p.getColor().getBlue()));
-		ret.setOpacity(p.getOpacity());
-		ret.points=p.points;
-		/*for(Point point : p.points) {
+		ret.setFill(Color.color(c.getRed(),c.getGreen(), c.getBlue()));
+		ret.setOpacity(c.getOpacity());
+		//ret.points=p;
+		for(Point point : p) {
 			ret.points.add(point);
-		}*/
+		}
+	}
+	
+	public ConvexPolygon (ConvexPolygon poly) {
+		this.setFill(poly.getColor());
+		this.setOpacity(poly.getOpacity());
+		for(Double point : poly.getPoints()) {
+			this.getPoints().add(point);
+		}
+		
 	}
 
+	public void setFitness(double fitness) {
+		this.fitness = fitness;
+	}
 	
 	
 	public ConvexPolygon(){
 		super();
 	}
 
-	public void updateMinMax() {
-		ArrayList<Integer> X = new ArrayList<Integer>();
-		ArrayList<Integer> Y = new ArrayList<Integer>();
-		
-		for(int i=0; i<points.size(); i++) {
-			X.add(i,points.get(i).getX());
-			Y.add(i,points.get(i).getY());
-		}
-		
-		minX= Math.max(Collections.min(X),0);;
-		minY= Math.max(Collections.min(Y),0);
-		maxX= Math.min(Collections.max(X),max_X);
-		maxY= Math.min(Collections.max(Y), max_Y);
-		
-	}
 
 	public List<Point> pointsList() {
 		return points;
@@ -83,6 +80,7 @@ public class ConvexPolygon extends Polygon {
 	
 	public double checkfitness(Color[][] target) {
 		double fit=0;
+		area=0;
 		
 		Group image = new Group();
 		image.getChildren().add(this);
@@ -91,33 +89,33 @@ public class ConvexPolygon extends Polygon {
 		image.snapshot(null,wimg);
 		PixelReader pr = wimg.getPixelReader();
 		
-		//System.out.println("minx= "+minX+" maxx= "+maxX+" miny= "+minY+" maxy= "+maxY);
-		System.out.println("checking local fitness");
-		for(int i=0; i<max_X; i++) {
-			for(int j=0; j<max_Y; j++) {
-				Color c = pr.getColor(i, j);
+		for (int i=0; i<max_X; i++){
+			for (int j=0; j<max_Y; j++){
+				
 				if(this.contains(i, j)){
+					Color c = pr.getColor(i, j);
 					area++;
 					fit += Math.abs(c.getBlue()-target[i][j].getBlue())
 							+Math.abs(c.getRed()-target[i][j].getRed())
 							+Math.abs(c.getGreen()-target[i][j].getGreen());
+					
 				}
 				
 			}
 		}
-		this.fitness= (1-(fit/(3*area)))*100;
-		//this.fitness= 100-100*(Math.sqrt(fit)/area);
-		System.out.println(this.fitness);
-		//this.fitness=Math.sqrt(fit);
+		this.fitness = fit/(3*area);
+		this.fitness= 1 - this.fitness;
+		this.fitness = this.fitness*100;
 		return(this.fitness);
 	}
-	
-	public double getArea() {
-		return area;
-	}
+
 
 	public double getFitness() {
 		return fitness;
+	}
+	
+	public int getArea() {
+		return area;
 	}
 
 	public String toString(){
@@ -129,6 +127,14 @@ public class ConvexPolygon extends Polygon {
 	public void addPoint(double x, double y) {
 		getPoints().add(x);
 		getPoints().add(y);
+	}
+	
+	
+	public void genRandomTriangle() {
+		for(int i=0; i<3; i++) {
+			addPoint((double)gen.nextInt(max_X), (double)gen.nextInt(max_Y));
+		}
+		
 	}
 
 	// http://cglab.ca/~sander/misc/ConvexGeneration/convex.html
@@ -281,28 +287,34 @@ public class ConvexPolygon extends Polygon {
 	        return Math.abs(sum)/2;
 	    }
 	
-	public ConvexPolygon mutate() {
-		ConvexPolygon p = this;
+	public void mutate() {
+	
+		//OPACITY
+		this.mutateOpacity();
 		
-		//DARKER
-		p.setFill(this.getColor().darker());
+		
 		
 		//CHANGE COLOR
-		p.mutateColor();
-		 
-		return p;
+		//this.mutateColor();
 		
 		//TRANSLATE
-		//this.mutateTranslate(gen.nextInt(max_X), gen.nextInt(max_Y));
+		//this.mutateTranslate(gen.nextInt(10), gen.nextInt(10));
+			
+		//POINT
+		this.mutationPoint(gen.nextInt(70));
 		
-		
+	
 	}
 	
 	private void mutateTranslate(int distx, int disty) {
-		for(int i=0; i<points.size(); i++) {
-				points.get(i).translate(distx,  disty);
-				System.out.println("translating .. ");
-				//this.updateMinMax();
+		for(int i=0; i<getPoints().size()-1; i++) {
+			if(gen.nextBoolean()) {
+				getPoints().set(i, getPoints().get(i)+distx);
+				getPoints().set(i+1, getPoints().get(i+1)+disty);
+			}else {
+				getPoints().set(i, getPoints().get(i)-distx);
+				getPoints().set(i+1, getPoints().get(i+1)-disty);
+			}
 		}
 	}
 	
@@ -317,13 +329,13 @@ public class ConvexPolygon extends Polygon {
 	private void mutateChangePolygon() {
 		this.mutateColor();
 		this.mutationPoint(30);
-		this.mutateOpacity(5);
+		this.mutateOpacity();
 		
 	}
 
 	private void mutateColor() {
 		//aléatoirement : prendre changer une nuance de couleur
-		Color clr = (Color) this.getColor();
+		Color clr =  this.getColor();
 		double red = clr.getRed();
 		double blue = clr.getBlue();
 		double green = clr.getGreen();
@@ -333,13 +345,16 @@ public class ConvexPolygon extends Polygon {
 		double mut;
 		Random rn = new Random();
 		choix = rn.nextInt(5);
-		mut = rn.nextInt(100)/100;
+		mut = rn.nextInt(30);
+		mut=mut/100;
+		//mut = rn.nextDouble();
+		//System.out.println("NEXT DOUBLE : "+mut);
 		switch(choix) {
 		case 0 :
 			//changer red
 			double red_new = this.mutationColor(red, mut);
 			this.setFill(Color.color(red_new,green, blue));
-//			System.out.println("0 ---- COLOR red de "+red+" à "+red_new);
+			//System.out.println("0 ---- COLOR red de "+red+" à "+red_new);
 
 
 			break;
@@ -347,13 +362,13 @@ public class ConvexPolygon extends Polygon {
 			//changer blue
 			double blue_new = this.mutationColor(blue, mut);
 			this.setFill(Color.color(red,green, blue_new)) ;
-//			System.out.println("0 ---- COLOR blue de "+blue+" à "+blue_new);
+			//System.out.println("0 ---- COLOR blue de "+blue+" à "+blue_new);
 			break;
 		case 2 :
 			//changer green
 			double green_new = this.mutationColor(green, mut);
 			this.setFill(Color.color(red,green_new, blue));
-//			System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
+			//System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
 			break;
 		case 3 :
 			this.setFill(this.getColor().brighter());
@@ -363,51 +378,50 @@ public class ConvexPolygon extends Polygon {
 			this.setFill(this.getColor().darker());
 			break;
 		}
+			//System.out.println("COLOOOOOR = "+this.getColor());
 	}
 
 
 	private void mutationPoint(int max) {
 		int choix;
 		Random rn = new Random();
-		choix=rn.nextInt(3);
-		int i = rn.nextInt(points.size());
-		Point p;
-		switch (choix) {
-		case 0 :			
-			p = new Point(points.get(i).getX(), this.mutationPositionY(points.get(i).getY(), max_Y));
+		
+		int i = rn.nextInt(getPoints().size()-1);
+		int nbtours = rn.nextInt(3);
+		for(int j=0; j<nbtours; j++) {
+			choix=rn.nextInt(3);
+			switch (choix) {
+			
+			case 0 :
+				getPoints().set(i, getPoints().get(i)+max);
+				break;
+				
+			case 1 :
+				if(i%2==0) {
+					//X
+					getPoints().set(i, getPoints().get(i)+max);
+					getPoints().set(i+1, getPoints().get(i+1)+max);
+				}else {
+					//Y
+					getPoints().set(i-1, getPoints().get(i-1)-max);
+					getPoints().set(i, getPoints().get(i)-max);
+				}
 
-//			System.out.println("0 ---- POINT Y de "+points.get(i).getY()+" à "+p.getY());
-			points.set(i, p);
-
-			break;
-		case 1 :
-			p = new Point(this.mutationPositionX(points.get(i).getX(), max_X), points.get(i).getY());
-
-//			System.out.println("1 ---- POINT X de "+points.get(i).getX()+" à "+p.getX());
-			points.set(i, p);
-
-			break;
-		case 2 :
-
-			p = new Point(this.mutationPositionX(points.get(i).getX(), max), this.mutationPositionY(points.get(i).getY(), max));
-
-//			System.out.println("2 ---- POINT XY de "+points.get(i).getX()+" et "+points.get(i).getY()+" à "+p.getX()+" et "+p.getY());
-
-			points.set(i, p);
-
-			break;
+				break;
+			}
 		}
+		
 	}
-	private void mutateOpacity(int max) {
-		this.setOpacity(this.mutationOpacity(max));
+	private void mutateOpacity() {
+		this.setOpacity(this.mutationOpacity());
 	}
 	/*
 	 * 
 	 */
-	private double mutationOpacity(int max) {
+	private double mutationOpacity() {
 		double ret;
 		Random rn = new Random();
-		double var = rn.nextInt();
+		double var = rn.nextInt(100);
 		var = var / 100;
 		double opacity = this.getOpacity();
 		if(rn.nextBoolean()) {
@@ -419,8 +433,8 @@ public class ConvexPolygon extends Polygon {
 			}
 		}
 		else {
-			if((opacity-var) < 0.0) {
-				ret = 0.0;
+			if((opacity-var) < 0.4) {
+				ret = 0.4;
 			}
 			else {
 				ret = opacity-var;
