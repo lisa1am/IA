@@ -59,7 +59,7 @@ public class Test extends Application{
 		
 		
 		Individual ind = new Individual();
-		ind.putPolygons(10);
+		ind.putPolygons(50);
 		
 		
 		//DRAW

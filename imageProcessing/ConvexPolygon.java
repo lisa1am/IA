@@ -295,13 +295,19 @@ public class ConvexPolygon extends Polygon {
 		
 		
 		//CHANGE COLOR
-		//this.mutateColor();
+		this.mutateColor();
 		
-		//TRANSLATE
-		//this.mutateTranslate(gen.nextInt(10), gen.nextInt(10));
+		
+		//if(gen.nextBoolean()) {
+			//TRANSLATE
+			//this.mutateTranslate(gen.nextInt(20), gen.nextInt(20));
+		//}else{
+			//POINT
+			this.mutationPoint(gen.nextInt(20));
 			
-		//POINT
-		this.mutationPoint(gen.nextInt(70));
+		//}
+		
+			
 		
 	
 	}
@@ -309,11 +315,11 @@ public class ConvexPolygon extends Polygon {
 	private void mutateTranslate(int distx, int disty) {
 		for(int i=0; i<getPoints().size()-1; i++) {
 			if(gen.nextBoolean()) {
-				getPoints().set(i, getPoints().get(i)+distx);
-				getPoints().set(i+1, getPoints().get(i+1)+disty);
+				getPoints().set(i, giveValuePlus(getPoints().get(i),distx, max_X));
+				getPoints().set(i+1, giveValuePlus(getPoints().get(i+1),disty, max_Y));
 			}else {
-				getPoints().set(i, getPoints().get(i)-distx);
-				getPoints().set(i+1, getPoints().get(i+1)-disty);
+				getPoints().set(i, giveValueMinus(getPoints().get(i),distx));
+				getPoints().set(i+1, giveValueMinus(getPoints().get(i+1),disty));
 			}
 		}
 	}
@@ -389,29 +395,49 @@ public class ConvexPolygon extends Polygon {
 		int i = rn.nextInt(getPoints().size()-1);
 		int nbtours = rn.nextInt(3);
 		for(int j=0; j<nbtours; j++) {
-			choix=rn.nextInt(3);
-			switch (choix) {
-			
-			case 0 :
-				getPoints().set(i, getPoints().get(i)+max);
-				break;
-				
-			case 1 :
-				if(i%2==0) {
-					//X
-					getPoints().set(i, getPoints().get(i)+max);
-					getPoints().set(i+1, getPoints().get(i+1)+max);
+	
+				if(rn.nextBoolean()) {
+					if(i%2==0) {
+						//X
+						getPoints().set(i, giveValuePlus(getPoints().get(i),max,max_X));
+						getPoints().set(i+1, giveValuePlus(getPoints().get(i+1),max,max_Y));
+					}else {
+						//Y
+						getPoints().set(i-1, giveValuePlus(getPoints().get(i-1),max,max_X));
+						getPoints().set(i, giveValuePlus(getPoints().get(i),max,max_Y));
+					}
 				}else {
-					//Y
-					getPoints().set(i-1, getPoints().get(i-1)-max);
-					getPoints().set(i, getPoints().get(i)-max);
+					if(i%2==0) {
+						//X
+						getPoints().set(i, giveValueMinus(getPoints().get(i),max));
+						getPoints().set(i+1, giveValueMinus(getPoints().get(i+1),max));
+					}else {
+						//Y
+						getPoints().set(i-1, giveValueMinus(getPoints().get(i-1),max));
+						getPoints().set(i, giveValueMinus(getPoints().get(i),max));
+					}
 				}
-
-				break;
-			}
 		}
 		
 	}
+	
+	private double giveValuePlus(double coord,int val, int MAX) {
+		if((coord+val)>MAX) {
+			return(MAX+10);
+		}else {
+			return(coord+val);
+		}
+	}
+	
+	private double giveValueMinus(double coord, int val) {
+		if((coord-val)<0) {
+			return(-10);
+		}else {
+			return(coord-val);
+		}
+	}
+	
+	
 	private void mutateOpacity() {
 		this.setOpacity(this.mutationOpacity());
 	}

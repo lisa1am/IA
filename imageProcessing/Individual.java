@@ -105,17 +105,19 @@ public class Individual implements Comparable{
 		
 				if(poly.contains(i, j)){
 					localArea++;
-					fit += Math.abs(c.getBlue()-target[i][j].getBlue())
-							+Math.abs(c.getRed()-target[i][j].getRed())
-							+Math.abs(c.getGreen()-target[i][j].getGreen());
+					fit += Math.pow(c.getBlue()-target[i][j].getBlue(),2)
+							+Math.pow(c.getRed()-target[i][j].getRed(),2)
+							+Math.pow(c.getGreen()-target[i][j].getGreen(),2);
 				}
 				
 			}
 		}
-		fit = fit/(3*localArea);
+		/*fit = fit/(3*localArea);
 		fit = 1- fit;
-		fit = fit*100;
+		fit = fit*100;*/
+		fit = Math.sqrt(fit);
 		System.out.println(fit);
+		
 		
 		return (fit);
 	}
@@ -153,6 +155,7 @@ public class Individual implements Comparable{
 		this.fitness = res/(3*area);
 		this.fitness= 1 - this.fitness;
 		this.fitness = this.fitness*100;
+		//this.fitness = Math.sqrt(res);
 		return (this.fitness);
 	}
 	
@@ -169,19 +172,23 @@ public class Individual implements Comparable{
 	
 		ConvexPolygon poly, before;
 		Random rn = new Random();
+		double localFit;
 
 		// 50 polygons
 		//new
+	
 		for(int i=0; i<nbPoly; i++) {
 			poly = new ConvexPolygon(3);
+			localFit = poly.checkfitness(target);
 			
-			while((poly.checkfitness(target)<80)||(poly.getArea()<((maxX*maxY)/200))) {
+			while((localFit<80)||(poly.getArea()<((maxX*maxY)/200))) {
 				//poly.mutate();
 				poly = new ConvexPolygon(3);
+				localFit = poly.checkfitness(target);
 			}
 			
 			individu.add(poly);	
-			System.out.println("local fitness = "+poly.checkfitness(target));
+			System.out.println("local fitness = "+localFit);
 			System.out.println(i);
 		}
 		
@@ -215,10 +222,8 @@ public class Individual implements Comparable{
 		
 		for(int i=0; i<nbPoly; i++) {
 			//MUTATE
-			System.out.println("IND BEFORE= "+this.fitnessScore());
 			index = rn.nextInt(this.getIndividu().size());
 			this.getIndividu().get(index).mutate();
-			System.out.println("IND AFTER= "+this.fitnessScore());
 			
 		}
 		updateFitnessScore();
@@ -229,15 +234,19 @@ public class Individual implements Comparable{
 	public Individual draw() {
 		
 		Individual indTemp, ind = new Individual(this);
+		double fitTemp, fit=ind.fitnessScore();
 		
-		while(ind.fitnessScore()<70) {	
+		while(fit>25) {	
 			indTemp = new Individual(ind);
+			fitTemp = indTemp.fitnessScore();
 			ind.mutate();
+			fit = ind.fitnessScore();
 			// l'individu était meilleur avant la mutation
-			if(ind.fitnessScore()<indTemp.fitnessScore()) {
+			if(fit>fitTemp) {
 				ind = new Individual(indTemp);
+				fit = fitTemp;
 			}
-			System.out.println("IND FINAL = "+ ind.fitnessScore()+"\n\n");
+			System.out.println("IND FINAL = "+ fit+"\n\n");
 		}
 		return ind;
 		
