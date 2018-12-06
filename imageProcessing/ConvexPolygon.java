@@ -232,60 +232,7 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 * 
 	 */
-
-	/*public void mutate(int rate) {
-		Random rn = new Random();
-		int randomRate = rn.nextInt(101); 
-		int index=0;
-		int choix = rn.nextInt(7);
-		
-		
-		if(true) {
-			switch(choix) {
-			case 0 : 
-				this.mutationPoint(6);
-				//System.out.println("MUTATE POINT");
-				break;
-			case 1 :
-				this.setFill(this.getColor().brighter());
-				break;
-			case 2 :
-				this.setFill(this.getColor().darker());
-				break;
-			case 3 :
-				this.mutateColor(5);
-				//System.out.println("MUTATE COLOR");
-				break;
-			case 4:
-				this.mutateOpacity(5);
-				//System.out.println("MUTATE OPACITY");
-				break;
-			case 5:
-				this.mutateInverse();
-				//System.out.println("MUTATE INVRSE");
-				break;
-			case 6:
-				this.mutateTranslate(rn.nextInt(max_X), rn.nextInt(max_Y));
-				//System.out.println("MUTATE TRANSLATE");
-				break;
-			case 7:
-				this.mutateChangePolygon();
-				//System.out.println("MUTATE CHANGE POLYGON");
-				break;
-			
-			}
-
-		}
-
-	}*/
 	
-	 public double area() {
-	        double sum = 0.0;
-	        for (int i = 0; i < points.size(); i++) {
-	            sum = sum + points.get(i).crossProduct(points.get((i+1)%points.size()));
-	        }
-	        return Math.abs(sum)/2;
-	    }
 	
 	public void mutate() {
 	
@@ -298,19 +245,19 @@ public class ConvexPolygon extends Polygon {
 		this.mutateColor();
 		
 		
-		//if(gen.nextBoolean()) {
+		if(gen.nextBoolean()) {
 			//TRANSLATE
-			//this.mutateTranslate(gen.nextInt(20), gen.nextInt(20));
-		//}else{
+			this.mutateInverse();
+		}else{
 			//POINT
 			this.mutationPoint(gen.nextInt(20));
-			
-		//}
+		}
 		
 			
 		
 	
 	}
+	
 	
 	private void mutateTranslate(int distx, int disty) {
 		for(int i=0; i<getPoints().size()-1; i++) {
@@ -325,11 +272,19 @@ public class ConvexPolygon extends Polygon {
 	}
 	
 	private void mutateInverse() {
-		Point tmp = points.get(0);
-		for(int i=1; i<points.size(); i++) {
-			points.set(i-1, points.get(i));
+		
+		double x = getPoints().get(0);
+		double y = getPoints().get(1);
+		
+		for(int i=2; i<getPoints().size()-1; i++) {
+			getPoints().set(i-2, getPoints().get(i));
+			getPoints().set(i-1, getPoints().get(i+1));
+			i++;
 		}
-		points.set(points.size()-1, tmp);
+		
+		getPoints().set(getPoints().size()-2, x);
+		getPoints().set(getPoints().size()-1, y);
+		
 	}
 	
 	private void mutateChangePolygon() {
@@ -353,28 +308,22 @@ public class ConvexPolygon extends Polygon {
 		choix = rn.nextInt(5);
 		mut = rn.nextInt(30);
 		mut=mut/100;
-		//mut = rn.nextDouble();
-		//System.out.println("NEXT DOUBLE : "+mut);
+		
 		switch(choix) {
 		case 0 :
 			//changer red
 			double red_new = this.mutationColor(red, mut);
 			this.setFill(Color.color(red_new,green, blue));
-			//System.out.println("0 ---- COLOR red de "+red+" à "+red_new);
-
-
 			break;
 		case 1 :
 			//changer blue
 			double blue_new = this.mutationColor(blue, mut);
 			this.setFill(Color.color(red,green, blue_new)) ;
-			//System.out.println("0 ---- COLOR blue de "+blue+" à "+blue_new);
 			break;
 		case 2 :
 			//changer green
 			double green_new = this.mutationColor(green, mut);
 			this.setFill(Color.color(red,green_new, blue));
-			//System.out.println("0 ---- COLOR green de "+green+" à "+green_new);
 			break;
 		case 3 :
 			this.setFill(this.getColor().brighter());
@@ -384,12 +333,10 @@ public class ConvexPolygon extends Polygon {
 			this.setFill(this.getColor().darker());
 			break;
 		}
-			//System.out.println("COLOOOOOR = "+this.getColor());
 	}
 
 
 	private void mutationPoint(int max) {
-		int choix;
 		Random rn = new Random();
 		
 		int i = rn.nextInt(getPoints().size()-1);
@@ -466,7 +413,6 @@ public class ConvexPolygon extends Polygon {
 				ret = opacity-var;
 			}
 		}
-//		System.out.println("0 ---- OPACITY de "+opacity+" à "+ret);
 		return ret;
 	}
 
@@ -502,33 +448,6 @@ public class ConvexPolygon extends Polygon {
 	 * 
 	 * 
 	 */
-	private int mutationPositionY(int position, int max) {
-		int ret;
-		Random rn = new Random();
-		int var = rn.nextInt();
-
-		if(rn.nextBoolean()) {
-			if((position+var) > max_Y) {
-				ret = max_Y;
-			}
-			else {
-				ret = position+var;
-			}
-		}
-		else {
-			if((position-var) < 0) {
-				ret = 0;
-			}
-			else {
-				ret = position-var;
-			}
-		}
-		return ret;
-	}
-	/*
-	 * 
-	 * 
-	 */
 	private double mutationColor(double couleur, double mut) {
 		double ret;
 		Random rn = new Random();
@@ -557,108 +476,5 @@ public class ConvexPolygon extends Polygon {
 	public Color getColor() {
 		return (Color) this.getFill();
 	}
-
-
-	/*
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * NO UTLITY
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-
-	public ConvexPolygon crossover(ConvexPolygon cp) {
-		Random rn = new Random();
-		ConvexPolygon child;
-		int min=cp.points.size();
-		int max=this.points.size();
-		int temp;
-		//garder le nombre de sommets de chaque parent
-		if(this.points.size()<cp.points.size()) {
-			temp=min;
-			min=max;
-			max=temp;
-		}
-
-		//NOMBRE DE SOMMETS
-		if(rn.nextBoolean()) {
-			//MÉLANGE DES PARENTS
-
-			//aléatoirement : générer un enfant avec un nombre de sommets compris entre
-			//le nombre de sommet de chacun des parents
-			child= new ConvexPolygon(((int)Math.random() * ((max - min) + 1)) + min);
-		}else {
-			//UN SEUL PARENT À LA FOIS
-			if(rn.nextBoolean()) {
-				//PARENT 1
-				child = new ConvexPolygon(min);
-			}else {
-				//PARENT 2
-				child = new ConvexPolygon(max);
-			}	
-		}
-
-		//COULEUR
-		if(rn.nextBoolean()) {
-			//MÉLANGE DES PARENTS
-
-			//couleur : moyenne des couleur des deux parents avec des coeff random
-			child.setFill(avgRandomColor(this.getColor(), cp.getColor()));
-		}else {
-			//UN SEUL PARENT À LA FOIS
-			if(rn.nextBoolean()) {
-				//PARENT 1
-				child.setFill(this.getColor());
-
-			}else {
-				//PARENT 2
-				child.setFill(cp.getColor());
-			}
-
-		}
-		return child;
-
-	}
-
-	public Color avgRandomColor(Color c1, Color c2) {
-		Random rn = new Random();
-		// je divise par 100 sinon t'as un coef qui marche pas, et 101 car exclusif et pas inclusif
-		double coef = rn.nextInt(101);
-		coef = coef/100;
-
-		double r1 =  c1.getRed();
-		double r2 =  c2.getRed();
-		double b1 =  c1.getBlue();
-		double b2 =  c2.getBlue();
-		double g1 =  c1.getGreen();
-		double g2 =  c2.getGreen();
-
-
-		//Clareté du code
-		double r = (r1*coef)+(r2*(1-coef));
-		double g = (g1*coef)+(g2*(1-coef));
-		double b = (b1*coef)+(b2*(1-coef));
-
-		Color c = Color.color(r, g, b);
-		return c;
-	}
-
-	public double avgRandomOpacity(double o1, double o2) {
-		Random rn = new Random();
-		double coef = rn.nextInt(101); 
-		coef = coef /100;
-		double ret = o1*coef + o2*(1-coef);
-		return ret;
-	}
-
 
 }

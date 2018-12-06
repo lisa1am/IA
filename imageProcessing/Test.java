@@ -27,7 +27,7 @@ public class Test extends Application{
 	}
 	
 	public void start(Stage myStage){
-		String targetImage = "monaLisa-100.jpg";
+		String targetImage = "firefox.jpeg";
 		Color[][] target=null;
 		Random rn = new Random();
 		int maxX=0;
