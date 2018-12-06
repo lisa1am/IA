@@ -239,34 +239,43 @@ public class ConvexPolygon extends Polygon {
 		//OPACITY
 		this.mutateOpacity();
 		
-		
-		
 		//CHANGE COLOR
 		this.mutateColor();
 		
 		
-		if(gen.nextBoolean()) {
-			//TRANSLATE
-			this.mutateInverse();
-		}else{
-			//POINT
-			this.mutationPoint(gen.nextInt(20));
-		}
-		
+		//if(gen.nextBoolean()) {
+			//INVERSE
+			//this.mutateInverse();
+		//}else{
+			//if(gen.nextBoolean()) {
+				//POINT
+				this.mutationPoint(gen.nextInt(20));
+			//}else {
+				//TRANSLATE
+				//this.mutateTranslate(gen.nextInt(20), gen.nextInt(30));
+			//}
 			
-		
-	
+		//}
 	}
 	
 	
 	private void mutateTranslate(int distx, int disty) {
-		for(int i=0; i<getPoints().size()-1; i++) {
-			if(gen.nextBoolean()) {
-				getPoints().set(i, giveValuePlus(getPoints().get(i),distx, max_X));
-				getPoints().set(i+1, giveValuePlus(getPoints().get(i+1),disty, max_Y));
-			}else {
-				getPoints().set(i, giveValueMinus(getPoints().get(i),distx));
-				getPoints().set(i+1, giveValueMinus(getPoints().get(i+1),disty));
+		
+		boolean contains = false;
+		for(int i=0; i<getPoints().size(); i++) {
+			contains = contains || this.contains(getPoints().get(i)+distx, getPoints().get(i+1)+disty);
+			i++;
+		}
+		
+		if(contains) {
+			for(int i=0; i<getPoints().size()-1; i++) {
+				if(gen.nextBoolean()) {
+					getPoints().set(i, giveValuePlus(getPoints().get(i),distx, max_X));
+					getPoints().set(i+1, giveValuePlus(getPoints().get(i+1),disty, max_Y));
+				}else {
+					getPoints().set(i, giveValueMinus(getPoints().get(i),distx));
+					getPoints().set(i+1, giveValueMinus(getPoints().get(i+1),disty));
+				}
 			}
 		}
 	}
@@ -394,7 +403,7 @@ public class ConvexPolygon extends Polygon {
 	private double mutationOpacity() {
 		double ret;
 		Random rn = new Random();
-		double var = rn.nextInt(100);
+		double var = rn.nextInt(50);
 		var = var / 100;
 		double opacity = this.getOpacity();
 		if(rn.nextBoolean()) {
@@ -406,8 +415,8 @@ public class ConvexPolygon extends Polygon {
 			}
 		}
 		else {
-			if((opacity-var) < 0.4) {
-				ret = 0.4;
+			if((opacity-var) < 0.25) {
+				ret = 0.25;
 			}
 			else {
 				ret = opacity-var;

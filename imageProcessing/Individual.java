@@ -199,12 +199,12 @@ public class Individual{
 		int nbPoly = rn.nextInt(this.getIndividu().size());
 		int index;
 		
-			for(int i=0; i<nbPoly; i++) {
+			//for(int i=0; i<nbPoly; i++) {
 				//MUTATE
 				index = rn.nextInt(this.getIndividu().size());
 				this.getIndividu().get(index).mutate();
 				
-			}
+			//}
 		
 		updateFitnessScore();
 	}
@@ -216,7 +216,7 @@ public class Individual{
 		Individual indTemp, ind = new Individual(this);
 		double fitTemp, fit=ind.fitnessScore();
 		
-		while(fit>10) {	
+		while(fit>15) {	
 			indTemp = new Individual(ind);
 			fitTemp = indTemp.fitnessScore();
 			ind.mutate();
